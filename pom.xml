@@ -52,6 +52,13 @@
         <artifactId>netty-codec-mqtt</artifactId>
         <version>5.0.0.Alpha2</version>
       </dependency>
+      <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.6</version>
+      </dependency>
+
 
     </dependencies>
     <!-- https://mvnrepository.com/artifact/io.projectreactor.netty/reactor-netty -->
