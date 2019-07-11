@@ -41,6 +41,10 @@ public class ClientConnection implements  ClientOperation {
         return null;
     }
 
+    @Override
+    public MessageConnection getConnection() {
+        return connection;
+    }
 
 
 }

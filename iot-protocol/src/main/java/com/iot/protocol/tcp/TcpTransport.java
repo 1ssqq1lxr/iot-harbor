@@ -5,7 +5,6 @@ import com.iot.config.ClientConfig;
 import com.iot.config.ServerConfig;
 import com.iot.protocol.Protocol;
 import com.iot.protocol.Transport;
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
@@ -56,8 +55,7 @@ public class TcpTransport extends Transport {
                         .connection(connection)
                         .inbound(connection.inbound())
                         .outbound(connection.outbound())
-                        .build()) {
-                });
+                        .build()));
     }
 
 

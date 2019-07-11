@@ -20,5 +20,7 @@ public interface ClientOperation {
 
     <T> Mono<Void> sub(String topic, Consumer<TransportMessage<T>> consumer);
 
+    MessageConnection getConnection();
+
 
 }
