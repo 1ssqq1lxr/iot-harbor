@@ -13,4 +13,8 @@ public class ServerConfig implements Config {
 
     private String protocol;
 
+    private int heart;
+
+    private boolean isLog;
+
 }
