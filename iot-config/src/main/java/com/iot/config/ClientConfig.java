@@ -1,6 +1,6 @@
 package com.iot.config;
 
-import com.iot.common.connection.ClientConnection;
+import com.iot.common.connection.ClientOperation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +19,8 @@ public class ClientConfig implements Config {
 
     private int heart;
 
-    private Consumer<ClientConnection> connectionConsumer;
+    private boolean isLog;
+
+    private Consumer<ClientOperation> connectionConsumer;
 
 }

@@ -1,6 +1,5 @@
 package com.iot.common.connection;
 
-
 import com.iot.common.Qos;
 import com.iot.common.message.TransportMessage;
 import reactor.core.Disposable;
@@ -8,17 +7,40 @@ import reactor.core.publisher.Mono;
 
 import java.util.function.Consumer;
 
-public interface ClientConnection {
+public class ClientConnection implements  ClientOperation {
 
-    Mono<Disposable> close();
 
-    Mono<ClientConnection> connect();
+    private final  MessageConnection connection;
 
-    Mono<Void> pub(String topic,String message);
+    public ClientConnection(MessageConnection connection) {
+        this.connection = connection;
+    }
 
-    Mono<Void> pub(String topic, String message, Qos qos);
+    @Override
+    public Mono<Disposable> close() {
+        return null;
+    }
 
-    <T> Mono<Void> sub(String topic, Consumer<TransportMessage<T>> consumer);
+    @Override
+    public Mono<ClientOperation> connect() {
+        return null;
+    }
+
+    @Override
+    public Mono<Void> pub(String topic, String message) {
+        return null;
+    }
+
+    @Override
+    public Mono<Void> pub(String topic, String message, Qos qos) {
+        return null;
+    }
+
+    @Override
+    public <T> Mono<Void> sub(String topic, Consumer<TransportMessage<T>> consumer) {
+        return null;
+    }
+
 
 
 }

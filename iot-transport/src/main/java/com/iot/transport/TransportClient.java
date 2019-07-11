@@ -1,7 +1,7 @@
 package com.iot.transport;
 
 
-import com.iot.common.connection.ClientConnection;
+import com.iot.common.connection.ClientOperation;
 import com.iot.config.ClientConfig;
 import com.iot.protocol.ProtocolType;
 import reactor.core.publisher.Mono;
@@ -40,11 +40,11 @@ public class TransportClient {
             return this;
         }
 
-        public TransportBuilder heart(int  heart, Consumer<ClientConnection> connectionConsumer){
+        public TransportBuilder heart(int  heart, Consumer<ClientOperation> connectionConsumer){
             return heart(heart);
         }
 
-        public Mono<ClientConnection> connect(){
+        public Mono<ClientOperation> connect(){
             return transportFactory.connect(config);
         }
 

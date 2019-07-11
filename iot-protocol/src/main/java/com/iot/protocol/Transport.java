@@ -1,7 +1,7 @@
 package com.iot.protocol;
 
-import com.iot.common.connection.ClientConnection;
-import com.iot.common.connection.ServerConnection;
+import com.iot.common.connection.ClientOperation;
+import com.iot.common.connection.ServerOperation;
 import com.iot.config.ClientConfig;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -17,8 +17,8 @@ public abstract class Transport {
         this.protocol=protocol;
     }
 
-    public abstract Mono<Disposable> start(Consumer<ServerConnection> consumer);
+    public abstract Mono<Disposable> start(Consumer<ServerOperation> consumer);
 
-    public abstract Mono<ClientConnection> connect(ClientConfig config);
+    public abstract Mono<ClientOperation> connect(ClientConfig config);
 
 }

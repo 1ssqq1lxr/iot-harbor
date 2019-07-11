@@ -1,9 +1,8 @@
 package com.iot.protocol.mqtt;
 
-import com.iot.common.connection.ClientConnection;
-import com.iot.common.connection.ServerConnection;
+import com.iot.common.connection.ClientOperation;
+import com.iot.common.connection.ServerOperation;
 import com.iot.config.ClientConfig;
-import com.iot.protocol.Protocol;
 import com.iot.protocol.Transport;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -17,12 +16,12 @@ public class MqttTransport extends Transport {
     }
 
     @Override
-    public Mono<Disposable> start(Consumer<ServerConnection> consumer) {
+    public Mono<Disposable> start(Consumer<ServerOperation> consumer) {
         return null;
     }
 
     @Override
-    public Mono<ClientConnection> connect(ClientConfig config) {
+    public Mono<ClientOperation> connect(ClientConfig config) {
         return null;
     }
 

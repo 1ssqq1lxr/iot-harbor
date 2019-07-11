@@ -1,6 +1,6 @@
 package com.iot.transport;
 
-import com.iot.common.connection.ClientConnection;
+import com.iot.common.connection.ClientOperation;
 import com.iot.config.ClientConfig;
 import com.iot.protocol.ProtocolFactory;
 import com.iot.protocol.ProtocolType;
@@ -16,7 +16,7 @@ public class TransportClientFactory {
     }
 
 
-    public Mono<ClientConnection> connect(ClientConfig config) {
+    public Mono<ClientOperation> connect(ClientConfig config) {
         return  Mono.from(protocolFactory.getProtocol(ProtocolType.valueOf(config.getProtocol()))
                 .get().getTransport().connect(config));
     }
