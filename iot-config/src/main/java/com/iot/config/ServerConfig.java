@@ -11,4 +11,10 @@ public class ServerConfig implements Config {
 
     private int  port;
 
+    private String protocol;
+
+    @Override
+    public String getProtocol() {
+        return null;
+    }
 }

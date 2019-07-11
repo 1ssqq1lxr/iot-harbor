@@ -8,5 +8,6 @@ public interface Protocol {
 
     boolean support(ProtocolType protocolType);
 
+    Transport getTransport();
 
 }

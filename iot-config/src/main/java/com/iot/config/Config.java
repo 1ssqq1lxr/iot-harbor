@@ -13,5 +13,7 @@ public interface Config {
 
     int getPort();
 
+    String getProtocol();
+
 
 }

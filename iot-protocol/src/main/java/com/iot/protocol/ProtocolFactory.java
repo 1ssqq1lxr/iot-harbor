@@ -1,15 +1,21 @@
 package com.iot.protocol;
 
+import com.iot.protocol.mqtt.MqttProtocol;
+import com.iot.protocol.tcp.TcpProtocol;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class ProtocolFactory {
 
-    private final List<Protocol> protocols;
+    private  List<Protocol> protocols = new ArrayList<>();
 
-    public ProtocolFactory(List<Protocol> protocols) {
-        this.protocols = protocols;
+    public ProtocolFactory(){
+        protocols.add(new MqttProtocol());
+        protocols.add(new TcpProtocol());
     }
+
 
     public void  registryProtocl(Protocol protocol){
         protocols.add(protocol);

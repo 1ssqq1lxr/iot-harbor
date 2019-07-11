@@ -6,9 +6,13 @@ import com.iot.config.ClientConfig;
 import com.iot.protocol.ProtocolType;
 import reactor.core.publisher.Mono;
 
+import java.util.function.Consumer;
+
 public class TransportClient {
 
     private ClientConfig config;
+
+    private TransportClientFactory transportFactory;
 
     private  TransportClient(){
 
@@ -17,6 +21,7 @@ public class TransportClient {
 
         public TransportBuilder(){
             config = new ClientConfig();
+            transportFactory = new TransportClientFactory();
         }
 
         public TransportBuilder(String ip,int port){
@@ -30,8 +35,17 @@ public class TransportClient {
              return this;
         }
 
+        public TransportBuilder heart(int  heart){
+            config.setHeart(heart);
+            return this;
+        }
+
+        public TransportBuilder heart(int  heart, Consumer<ClientConnection> connectionConsumer){
+            return heart(heart);
+        }
+
         public Mono<ClientConnection> connect(){
-            return Mono.empty();
+            return transportFactory.connect(config);
         }
 
     }
