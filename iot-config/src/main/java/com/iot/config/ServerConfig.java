@@ -13,8 +13,4 @@ public class ServerConfig implements Config {
 
     private String protocol;
 
-    @Override
-    public String getProtocol() {
-        return null;
-    }
 }
