@@ -19,6 +19,6 @@ public class TcpProtocol implements Protocol {
 
     @Override
     public Transport getTransport() {
-        return new MqttTransport();
+        return new TcpTransport(this);
     }
 }

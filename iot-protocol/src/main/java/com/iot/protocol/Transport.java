@@ -9,10 +9,16 @@ import reactor.core.publisher.Mono;
 import java.util.function.Consumer;
 
 
-public interface Transport {
+public abstract class Transport {
 
-    Mono<Disposable> start(Consumer<ServerConnection> consumer);
+    protected Protocol protocol;
 
-    Mono<ClientConnection> connect(ClientConfig config);
+    public Transport(Protocol protocol){
+        this.protocol=protocol;
+    }
+
+    public abstract Mono<Disposable> start(Consumer<ServerConnection> consumer);
+
+    public abstract Mono<ClientConnection> connect(ClientConfig config);
 
 }
