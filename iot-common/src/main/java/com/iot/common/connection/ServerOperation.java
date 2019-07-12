@@ -17,4 +17,6 @@ public interface ServerOperation {
 
 
     Mono<Void> ping();
+
+    Mono<Void> pong();
 }

@@ -24,5 +24,6 @@ public interface ClientOperation {
 
     Mono<Void> ping();
 
+    Mono<Void> pong();
 
 }

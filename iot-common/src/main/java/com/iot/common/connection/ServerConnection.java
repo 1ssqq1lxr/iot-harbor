@@ -32,4 +32,14 @@ public class ServerConnection implements  ServerOperation {
         return null;
     }
 
+    @Override
+    public Mono<Void> ping() {
+        return null;
+    }
+
+    @Override
+    public Mono<Void> pong() {
+        return null;
+    }
+
 }
