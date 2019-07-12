@@ -5,6 +5,7 @@ import com.iot.config.ClientConfig;
 import com.iot.config.ServerConfig;
 import com.iot.protocol.Protocol;
 import com.iot.protocol.Transport;
+import io.netty.util.AttributeKey;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
@@ -57,6 +58,7 @@ public class TcpTransport extends Transport {
                             .inbound(connection.inbound())
                             .outbound(connection.outbound())
                             .build()) ;
+                    connection.channel().attr(AttributeKeys.clientConnectionAttributeKey).set(clientConnection);
                     connection.onReadIdle(config.getHeart(),()->clientConnection.ping());
                     connection.onWriteIdle(config.getHeart(),()->clientConnection.ping());
                     return clientConnection;

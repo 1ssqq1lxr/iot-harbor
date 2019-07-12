@@ -22,5 +22,7 @@ public interface ClientOperation {
 
     MessageConnection getConnection();
 
+    Mono<Void> ping();
+
 
 }

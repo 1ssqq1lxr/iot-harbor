@@ -47,6 +47,7 @@ public class ClientConnection implements  ClientOperation {
     }
 
 
-    public void ping() {
+    public Mono<Void> ping() {
+        return Mono.empty();
     }
 }
