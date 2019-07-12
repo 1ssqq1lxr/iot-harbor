@@ -51,11 +51,16 @@ public class TcpTransport extends Transport {
                 .doOnConnected(connection -> Arrays.asList(protocol.getChannelHandler()).forEach(channelHandler -> connection.addHandler(channelHandler)))
                 .wiretap(config.isLog())
                 .connect()
-                .map(connection -> new ClientConnection(MessageConnection.builder()
-                        .connection(connection)
-                        .inbound(connection.inbound())
-                        .outbound(connection.outbound())
-                        .build()));
+                .map(connection -> {
+                 ClientConnection clientConnection=  new ClientConnection(MessageConnection.builder()
+                            .connection(connection)
+                            .inbound(connection.inbound())
+                            .outbound(connection.outbound())
+                            .build()) ;
+                    connection.onReadIdle(config.getHeart(),()->clientConnection.ping());
+                    connection.onWriteIdle(config.getHeart(),()->clientConnection.ping());
+                    return clientConnection;
+                });
     }
 
 

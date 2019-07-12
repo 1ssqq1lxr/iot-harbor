@@ -47,4 +47,6 @@ public class ClientConnection implements  ClientOperation {
     }
 
 
+    public void ping() {
+    }
 }
