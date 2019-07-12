@@ -26,7 +26,7 @@ public class TcpTransport extends Transport {
     @Override
     public Mono<DisposableServer> start(ServerConfig config, Consumer<ServerConnection> consumer) {
         return TcpServer.create()
-                .doOnConnection(c -> Arrays.asList(protocol.getChannelHandler()).forEach(channelHandler -> c.addHandler(channelHandler)) )
+                .doOnConnection(c -> protocol.getChannelHandler().forEach(channelHandler -> c.addHandler(channelHandler)) )
                 .port(config.getPort())
                 .wiretap(config.isLog())
                 .host(config.getIp())
@@ -49,11 +49,11 @@ public class TcpTransport extends Transport {
         return   TcpClient.create()
                 .port(config.getPort())
                 .host(config.getIp())
-                .doOnConnected(connection -> Arrays.asList(protocol.getChannelHandler()).forEach(channelHandler -> connection.addHandler(channelHandler)))
+                .doOnConnected(connection -> protocol.getChannelHandler().forEach(channelHandler -> connection.addHandler(channelHandler)))
                 .wiretap(config.isLog())
                 .connect()
                 .map(connection -> {
-                 ClientConnection clientConnection=  new ClientConnection(MessageConnection.builder()
+                    ClientConnection clientConnection=  new ClientConnection(MessageConnection.builder()
                             .connection(connection)
                             .inbound(connection.inbound())
                             .outbound(connection.outbound())

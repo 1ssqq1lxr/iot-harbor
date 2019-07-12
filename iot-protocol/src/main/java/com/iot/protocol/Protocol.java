@@ -2,9 +2,11 @@ package com.iot.protocol;
 
 import io.netty.channel.ChannelHandler;
 
+import java.util.List;
+
 public interface Protocol {
 
-    ChannelHandler[] getChannelHandler();
+    List<ChannelHandler> getChannelHandler();
 
     boolean support(ProtocolType protocolType);
 

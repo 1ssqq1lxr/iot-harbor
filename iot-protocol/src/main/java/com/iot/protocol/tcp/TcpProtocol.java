@@ -3,13 +3,22 @@ package com.iot.protocol.tcp;
 import com.iot.protocol.Protocol;
 import com.iot.protocol.ProtocolType;
 import com.iot.protocol.Transport;
-import com.iot.protocol.mqtt.MqttTransport;
 import io.netty.channel.ChannelHandler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class TcpProtocol implements Protocol {
+
+
+
+    private List<ChannelHandler> channelHandlers = new ArrayList<>();
+
     @Override
-    public ChannelHandler[] getChannelHandler() {
-        return new ChannelHandler[0];
+    public List<ChannelHandler> getChannelHandler() {
+        return channelHandlers;
     }
 
     @Override

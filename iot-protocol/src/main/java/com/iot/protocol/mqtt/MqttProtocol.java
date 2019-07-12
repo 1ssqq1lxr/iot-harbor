@@ -5,11 +5,14 @@ import com.iot.protocol.ProtocolType;
 import com.iot.protocol.Transport;
 import io.netty.channel.ChannelHandler;
 
+import java.util.List;
+
 public class MqttProtocol implements Protocol {
 
+
     @Override
-    public ChannelHandler[] getChannelHandler() {
-        return new ChannelHandler[0];
+    public List<ChannelHandler> getChannelHandler() {
+        return null;
     }
 
     @Override
