@@ -5,14 +5,12 @@ import com.iot.config.ClientConfig;
 import com.iot.config.ServerConfig;
 import com.iot.protocol.Protocol;
 import com.iot.protocol.Transport;
-import io.netty.util.AttributeKey;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class TcpTransport extends Transport {
