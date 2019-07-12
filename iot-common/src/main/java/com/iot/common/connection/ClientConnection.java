@@ -50,4 +50,14 @@ public class ClientConnection implements  ClientOperation {
     public Mono<Void> ping() {
         return Mono.empty();
     }
+
+    @Override
+    public Mono<Void> pong() {
+        return null;
+    }
+
+    @Override
+    public Mono<Void> onClose(Consumer<ClientOperation> consumer) {
+        return  Mono.fromRunnable(()-> consumer.accept(this));
+    }
 }

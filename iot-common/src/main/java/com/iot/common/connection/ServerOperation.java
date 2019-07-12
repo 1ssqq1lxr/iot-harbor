@@ -19,4 +19,6 @@ public interface ServerOperation {
     Mono<Void> ping();
 
     Mono<Void> pong();
+
+    Mono<Void> onClose(Consumer<ServerOperation> consumer);
 }

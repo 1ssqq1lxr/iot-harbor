@@ -42,4 +42,9 @@ public class ServerConnection implements  ServerOperation {
         return null;
     }
 
+    @Override
+    public Mono<Void> onClose(Consumer<ServerOperation> consumer) {
+        return  Mono.fromRunnable(()-> consumer.accept(this));
+    }
+
 }

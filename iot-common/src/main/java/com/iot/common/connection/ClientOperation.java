@@ -26,4 +26,6 @@ public interface ClientOperation {
 
     Mono<Void> pong();
 
+    Mono<Void> onClose(Consumer<ClientOperation> consumer);
+
 }
