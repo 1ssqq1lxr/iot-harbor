@@ -44,7 +44,7 @@ public class ServerConnection implements  ServerOperation {
 
     @Override
     public Mono<Void> onClose(Consumer<ServerOperation> consumer) {
-        return  Mono.fromRunnable(()-> consumer.accept(this));
+        return  Mono.fromRunnable(()->connection.getConnection().onDispose(()-> consumer.accept(this)));
     }
 
 }

@@ -58,6 +58,6 @@ public class ClientConnection implements  ClientOperation {
 
     @Override
     public Mono<Void> onClose(Consumer<ClientOperation> consumer) {
-        return  Mono.fromRunnable(()-> consumer.accept(this));
+        return  Mono.fromRunnable(()->connection.getConnection().onDispose(()-> consumer.accept(this)));
     }
 }
