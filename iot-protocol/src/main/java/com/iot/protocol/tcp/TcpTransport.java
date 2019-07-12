@@ -26,17 +26,21 @@ public class TcpTransport extends Transport {
     @Override
     public Mono<DisposableServer> start(ServerConfig config, Consumer<ServerConnection> consumer) {
         return TcpServer.create()
-                .doOnConnection(c -> protocol.getChannelHandler().forEach(channelHandler -> c.addHandler(channelHandler)) )
+                .doOnConnection(c -> protocol.getChannelHandler().forEach(c::addHandler) )
                 .port(config.getPort())
                 .wiretap(config.isLog())
                 .host(config.getIp())
                 .handle(((nettyInbound, nettyOutbound) -> {
-                    nettyInbound.withConnection(connection ->
-                        consumer.accept(new ServerConnection(MessageConnection.builder()
-                                .outbound(nettyOutbound)
-                                .inbound(nettyInbound)
-                                .connection(connection)
-                                .build())));
+                    nettyInbound.withConnection(connection ->{
+                             ServerConnection serverConnection=  new ServerConnection(MessageConnection.builder()
+                                        .outbound(nettyOutbound)
+                                        .inbound(nettyInbound)
+                                        .connection(connection)
+                                        .build());
+                            connection.channel().attr(AttributeKeys.serverConnectionAttributeKey).set(serverConnection);
+                            connection.onReadIdle(config.getHeart(),()->serverConnection.ping().subscribe());
+                            connection.onWriteIdle(config.getHeart(),()->serverConnection.ping().subscribe());
+                            });
                     return Flux.never();
                 }))
                 .bind()
@@ -49,7 +53,7 @@ public class TcpTransport extends Transport {
         return   TcpClient.create()
                 .port(config.getPort())
                 .host(config.getIp())
-                .doOnConnected(connection -> protocol.getChannelHandler().forEach(channelHandler -> connection.addHandler(channelHandler)))
+                .doOnConnected(connection -> protocol.getChannelHandler().forEach(connection::addHandler))
                 .wiretap(config.isLog())
                 .connect()
                 .map(connection -> {
@@ -59,8 +63,8 @@ public class TcpTransport extends Transport {
                             .outbound(connection.outbound())
                             .build()) ;
                     connection.channel().attr(AttributeKeys.clientConnectionAttributeKey).set(clientConnection);
-                    connection.onReadIdle(config.getHeart(),()->clientConnection.ping());
-                    connection.onWriteIdle(config.getHeart(),()->clientConnection.ping());
+                    connection.onReadIdle(config.getHeart(),()->clientConnection.ping().subscribe());
+                    connection.onWriteIdle(config.getHeart(),()->clientConnection.ping().subscribe());
                     return clientConnection;
                 });
     }

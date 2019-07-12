@@ -16,6 +16,5 @@ public interface ServerOperation {
     Mono<Void> pub(String topic, String message, Qos qos);
 
 
-
-
+    Mono<Void> ping();
 }
