@@ -18,7 +18,7 @@ public interface ClientOperation {
 
     Mono<Void> pub(String topic, String message, Qos qos);
 
-    <T> Mono<Void> sub(String topic, Consumer<TransportMessage<T>> consumer);
+    <T> Mono<Void> sub(String topic, Consumer<TransportMessage> consumer);
 
     MessageConnection getConnection();
 

@@ -1,19 +1,18 @@
 package com.iot.protocol.mqtt;
 
+import com.google.common.collect.Lists;
 import com.iot.protocol.Protocol;
 import com.iot.protocol.ProtocolType;
 import com.iot.protocol.Transport;
 import io.netty.channel.ChannelHandler;
+import io.netty.handler.codec.mqtt.MqttDecoder;
+import io.netty.handler.codec.mqtt.MqttEncoder;
 
 import java.util.List;
 
+
 public class MqttProtocol implements Protocol {
 
-
-    @Override
-    public List<ChannelHandler> getChannelHandler() {
-        return null;
-    }
 
     @Override
     public boolean support(ProtocolType protocolType) {
@@ -23,5 +22,10 @@ public class MqttProtocol implements Protocol {
     @Override
     public Transport getTransport() {
         return  new MqttTransport(this);
+    }
+
+    @Override
+    public List<Class<? extends ChannelHandler>> getHandlers() {
+        return Lists.newArrayList(MqttDecoder.class, MqttEncoder.class);
     }
 }

@@ -37,7 +37,7 @@ public class ClientConnection implements  ClientOperation {
     }
 
     @Override
-    public <T> Mono<Void> sub(String topic, Consumer<TransportMessage<T>> consumer) {
+    public <T> Mono<Void> sub(String topic, Consumer<TransportMessage> consumer) {
         return null;
     }
 
