@@ -13,6 +13,7 @@
     <module>iot-transport</module>
     <module>iot-protocol</module>
     <module>iot-config</module>
+      <module>iot-api</module>
   </modules>
 
   <name>iot-harbor</name>

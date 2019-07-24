@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>com.iot.message</groupId>
-            <artifactId>iot-common</artifactId>
+            <artifactId>iot-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

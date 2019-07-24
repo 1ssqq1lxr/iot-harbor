@@ -1,4 +1,4 @@
-package com.iot.protocol;
+package com.iot.common.annocation;
 
 public enum  ProtocolType {
 

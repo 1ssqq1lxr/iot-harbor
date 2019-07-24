@@ -1,5 +1,6 @@
 package com.iot.config;
 
+import com.iot.api.Config;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +17,9 @@ public class ServerConfig implements Config {
     private int heart;
 
     private boolean isLog;
+
+    private boolean ssl;
+
+
 
 }

@@ -1,4 +1,4 @@
-package com.iot.common.connection;
+package com.iot.api;
 
 
 import com.iot.common.Qos;

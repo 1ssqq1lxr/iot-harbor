@@ -1,6 +1,7 @@
-package com.iot.protocol;
+package com.iot.api;
 
 
+import com.iot.common.annocation.ProtocolType;
 import io.netty.channel.ChannelHandler;
 
 import java.util.List;

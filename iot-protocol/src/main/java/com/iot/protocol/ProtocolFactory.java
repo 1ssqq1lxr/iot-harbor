@@ -1,7 +1,8 @@
 package com.iot.protocol;
 
+import com.iot.common.annocation.ProtocolType;
+import com.iot.api.Protocol;
 import com.iot.protocol.mqtt.MqttProtocol;
-import com.iot.protocol.tcp.TcpProtocol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,6 @@ public class ProtocolFactory {
 
     public ProtocolFactory(){
         protocols.add(new MqttProtocol());
-        protocols.add(new TcpProtocol());
     }
 
 

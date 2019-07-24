@@ -1,10 +1,9 @@
 package com.iot.config;
 
-import com.iot.common.connection.ClientOperation;
+import com.iot.api.Config;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.function.Consumer;
 
 
 @Getter
@@ -21,6 +20,5 @@ public class ClientConfig implements Config {
 
     private boolean isLog;
 
-    private Consumer<ClientOperation> connectionConsumer;
-
+    private boolean ssl;
 }

@@ -1,9 +1,9 @@
 package com.iot.transport;
 
-import com.iot.common.connection.ClientOperation;
+import com.iot.api.ClientOperation;
 import com.iot.config.ClientConfig;
 import com.iot.protocol.ProtocolFactory;
-import com.iot.protocol.ProtocolType;
+import com.iot.common.annocation.ProtocolType;
 import reactor.core.publisher.Mono;
 
 

@@ -1,4 +1,4 @@
-package com.iot.config;
+package com.iot.api;
 
 
 
@@ -14,6 +14,8 @@ public interface Config {
     int getPort();
 
     String getProtocol();
+
+    boolean isSsl();
 
 
 }
