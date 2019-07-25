@@ -1,16 +1,18 @@
-package com.iot.common.connection;
+package com.iot.transport.handler;
 
+import com.iot.api.ClientOperation;
 import com.iot.common.Qos;
+import com.iot.common.connection.MessageConnection;
 import com.iot.common.message.TransportMessage;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Consumer;
 
-public class ClientConnection implements  ClientOperation {
+public class ClientConnection implements ClientOperation {
 
 
-    private final  MessageConnection connection;
+    private final MessageConnection connection;
 
     public ClientConnection(MessageConnection connection) {
         this.connection = connection;

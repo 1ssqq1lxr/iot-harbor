@@ -1,6 +1,8 @@
-package com.iot.common.connection;
+package com.iot.transport.handler;
 
+import com.iot.api.ServerOperation;
 import com.iot.common.Qos;
+import com.iot.common.connection.MessageConnection;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
@@ -9,7 +11,7 @@ import java.util.function.Consumer;
 public class ServerConnection implements  ServerOperation {
 
 
-    private final  MessageConnection connection;
+    private final MessageConnection connection;
 
     public ServerConnection(MessageConnection connection) {
         this.connection = connection;
