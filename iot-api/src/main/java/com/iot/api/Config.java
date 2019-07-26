@@ -13,9 +13,12 @@ public interface Config {
 
     int getPort();
 
+
     String getProtocol();
 
     boolean isSsl();
 
+    boolean isLog();
 
+    int  getHeart();
 }

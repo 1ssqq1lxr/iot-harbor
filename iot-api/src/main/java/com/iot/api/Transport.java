@@ -1,10 +1,7 @@
 package com.iot.api;
 
-import com.iot.common.connection.ServerConnection;
 import reactor.core.publisher.Mono;
-import reactor.netty.DisposableServer;
 
-import java.util.function.Consumer;
 
 
 public abstract class Transport {
@@ -15,8 +12,8 @@ public abstract class Transport {
         this.protocol=protocol;
     }
 
-    public abstract Mono<DisposableServer> start(Config config, Consumer<ServerConnection> consumer);
+    public abstract Mono<? extends ServerOperation> start(Config config);
 
-    public abstract Mono<ClientOperation> connect(Config config);
+    public abstract Mono<? extends ClientOperation> connect(Config config);
 
 }

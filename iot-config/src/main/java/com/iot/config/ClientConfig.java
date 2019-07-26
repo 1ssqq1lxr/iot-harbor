@@ -18,7 +18,7 @@ public class ClientConfig implements Config {
 
     private int heart;
 
-    private boolean isLog;
+    private boolean log;
 
     private boolean ssl;
 }
