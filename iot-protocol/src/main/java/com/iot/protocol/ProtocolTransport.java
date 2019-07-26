@@ -1,14 +1,17 @@
-package com.iot.api;
+package com.iot.protocol;
 
+import com.iot.api.ClientOperation;
+import com.iot.api.Config;
+import com.iot.api.ServerOperation;
 import reactor.core.publisher.Mono;
 
 
 
-public abstract class Transport {
+public abstract class ProtocolTransport {
 
     protected Protocol protocol;
 
-    public Transport(Protocol protocol){
+    public ProtocolTransport(Protocol protocol){
         this.protocol=protocol;
     }
 

@@ -4,13 +4,12 @@ import com.iot.api.ClientOperation;
 import com.iot.api.Config;
 import com.iot.api.ServerOperation;
 import com.iot.common.connection.ServerConnection;
-import com.iot.api.Transport;
+import com.iot.protocol.ProtocolTransport;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.UnicastProcessor;
 import reactor.netty.DisposableServer;
@@ -18,10 +17,9 @@ import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
 
 import java.time.Duration;
-import java.util.function.Consumer;
 
 @Slf4j
-public class MqttTransport extends Transport {
+public class MqttTransport extends ProtocolTransport {
 
     public MqttTransport(MqttProtocol mqttProtocol) {
         super(mqttProtocol);

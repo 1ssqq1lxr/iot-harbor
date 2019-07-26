@@ -1,7 +1,6 @@
 package com.iot.protocol;
 
 import com.iot.common.annocation.ProtocolType;
-import com.iot.api.Protocol;
 import com.iot.protocol.mqtt.MqttProtocol;
 
 import java.util.ArrayList;

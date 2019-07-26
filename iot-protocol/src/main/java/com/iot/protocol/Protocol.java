@@ -1,4 +1,4 @@
-package com.iot.api;
+package com.iot.protocol;
 
 
 import com.iot.common.annocation.ProtocolType;
@@ -11,7 +11,7 @@ public interface Protocol {
 
     boolean support(ProtocolType protocolType);
 
-    Transport getTransport();
+    ProtocolTransport getTransport();
 
     List<Class<? extends ChannelHandler>> getHandlers();
 
