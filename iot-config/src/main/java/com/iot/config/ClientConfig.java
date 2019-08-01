@@ -1,6 +1,6 @@
 package com.iot.config;
 
-import com.iot.api.Config;
+import com.iot.api.RsocketConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ClientConfig implements Config {
+public class ClientConfig implements RsocketConfiguration {
 
     private String ip;
 

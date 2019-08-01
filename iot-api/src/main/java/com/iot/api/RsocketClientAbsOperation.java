@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.function.Consumer;
 
-public abstract class RsocketAbstractOperation  implements  RsocketOperation{
+public abstract class RsocketClientAbsOperation implements  RsocketOperation{
 
 
 }

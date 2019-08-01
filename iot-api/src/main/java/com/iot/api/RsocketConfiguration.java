@@ -3,7 +3,7 @@ package com.iot.api;
 
 
 
-public interface Config {
+public interface RsocketConfiguration {
 
     void setIp(String ip);
 
@@ -12,7 +12,6 @@ public interface Config {
     String getIp();
 
     int getPort();
-
 
     String getProtocol();
 

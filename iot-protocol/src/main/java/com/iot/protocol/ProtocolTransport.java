@@ -1,7 +1,6 @@
 package com.iot.protocol;
 
-import com.iot.api.ClientOperation;
-import com.iot.api.Config;
+import com.iot.api.RsocketConfiguration;
 import com.iot.api.RsocketOperation;
 import reactor.core.publisher.Mono;
 
@@ -15,8 +14,8 @@ public abstract class ProtocolTransport {
         this.protocol=protocol;
     }
 
-    public abstract Mono<? extends RsocketOperation> start(Config config);
+    public abstract Mono<? extends RsocketOperation> start(RsocketConfiguration config);
 
-    public abstract Mono<? extends ClientOperation> connect(Config config);
+    public abstract Mono<? extends ClientOperation> connect(RsocketConfiguration config);
 
 }

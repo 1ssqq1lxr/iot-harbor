@@ -1,6 +1,5 @@
 package com.iot.transport;
 
-import com.iot.api.ClientOperation;
 import com.iot.config.ClientConfig;
 import com.iot.protocol.ProtocolFactory;
 import com.iot.common.annocation.ProtocolType;

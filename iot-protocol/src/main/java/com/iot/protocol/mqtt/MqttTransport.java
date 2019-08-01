@@ -1,13 +1,11 @@
 package com.iot.protocol.mqtt;
 
-import com.iot.api.ClientOperation;
-import com.iot.api.Config;
+import com.iot.api.RsocketConfiguration;
 import com.iot.api.RsocketOperation;
-import com.iot.api.connection.ClientConnection;
+import com.iot.transport.connection.RsocketClientConnection;
 import com.iot.common.codec.ProtocolCatagory;
 import com.iot.common.connection.AttributeKeys;
-import com.iot.common.connection.MessageConnection;
-import com.iot.common.connection.ServerConnection;
+import com.iot.common.connection.TransportConnection;
 import com.iot.common.message.TransportMessage;
 import com.iot.config.ClientConfig;
 import com.iot.protocol.ProtocolTransport;
@@ -34,7 +32,7 @@ public class MqttTransport extends ProtocolTransport {
 
 
     @Override
-    public Mono<? extends RsocketOperation> start(Config config) {
+    public Mono<? extends RsocketOperation> start(RsocketConfiguration config) {
 
         return   buildServer(config)
                 .doOnConnection(connection -> {
@@ -52,7 +50,7 @@ public class MqttTransport extends ProtocolTransport {
 
 
     @Override
-    public Mono<? extends ClientOperation> connect(Config config) {
+    public Mono<? extends ClientOperation> connect(RsocketConfiguration config) {
         return  Mono.just(buildClient(config)
                 .connectNow())
                 .map(connection -> {
@@ -65,7 +63,7 @@ public class MqttTransport extends ProtocolTransport {
                                     .timestammp(System.currentTimeMillis())
                                     .build()
                     ).then().subscribe();
-                    ClientConnection clientConnection=  new ClientConnection(MessageConnection.builder()
+                    RsocketClientConnection clientConnection=  new RsocketClientConnection(TransportConnection.builder()
                             .connection(connection)
                             .inbound(connection.inbound())
                             .outbound(connection.outbound())
@@ -81,7 +79,7 @@ public class MqttTransport extends ProtocolTransport {
     }
 
 
-    private TcpClient buildClient(Config config){
+    private TcpClient buildClient(RsocketConfiguration config){
         TcpClient client= TcpClient.create()
                 .port(config.getPort())
                 .host(config.getIp())
@@ -99,7 +97,7 @@ public class MqttTransport extends ProtocolTransport {
 
 
 
-    private  void   retryConnect(ClientConfig config, ClientConnection clientConnection, UnicastProcessor<TransportMessage>  messages){
+    private  void   retryConnect(ClientConfig config, RsocketClientConnection clientConnection, UnicastProcessor<TransportMessage>  messages){
         log.info("短线重连中..............................................................");
         buildClient(config)
                 .doOnConnected(c -> c.addHandler("decoder",new MessageDecoder2()).addHandler("encoder",new MessageEncoder()))
@@ -114,7 +112,7 @@ public class MqttTransport extends ProtocolTransport {
                                     .timestammp(System.currentTimeMillis())
                                     .build()
                     ).then().delaySubscription(Duration.ofSeconds(2)).subscribe();
-                    clientConnection.setConnection(MessageConnection.builder()
+                    clientConnection.setConnection(TransportConnection.builder()
                             .connection(connection)
                             .inbound(connection.inbound())
                             .outbound(connection.outbound())
@@ -129,7 +127,7 @@ public class MqttTransport extends ProtocolTransport {
     }
 
 
-    private TcpServer buildServer(Config config){
+    private TcpServer buildServer(RsocketConfiguration config){
         TcpServer server =TcpServer.create()
                 .port(config.getPort())
                 .wiretap(config.isLog())
