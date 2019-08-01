@@ -1,20 +1,19 @@
-package com.iot.transport.handler;
+package com.iot.api.connection;
 
-import com.iot.api.ClientOperation;
+import com.iot.api.RsocketOperation;
 import com.iot.common.Qos;
 import com.iot.common.connection.MessageConnection;
-import com.iot.common.message.TransportMessage;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Consumer;
 
-public class ClientConnection implements ClientOperation {
+public class ServerConnection implements RsocketOperation {
 
 
     private final MessageConnection connection;
 
-    public ClientConnection(MessageConnection connection) {
+    public ServerConnection(MessageConnection connection) {
         this.connection = connection;
     }
 
@@ -23,10 +22,6 @@ public class ClientConnection implements ClientOperation {
         return null;
     }
 
-    @Override
-    public Mono<ClientOperation> connect() {
-        return null;
-    }
 
     @Override
     public Mono<Void> pub(String topic, String message) {
@@ -39,18 +34,8 @@ public class ClientConnection implements ClientOperation {
     }
 
     @Override
-    public <T> Mono<Void> sub(String topic, Consumer<TransportMessage> consumer) {
-        return null;
-    }
-
-    @Override
-    public MessageConnection getConnection() {
-        return connection;
-    }
-
-
     public Mono<Void> ping() {
-        return Mono.empty();
+        return null;
     }
 
     @Override
@@ -59,7 +44,8 @@ public class ClientConnection implements ClientOperation {
     }
 
     @Override
-    public Mono<Void> onClose(Consumer<ClientOperation> consumer) {
+    public Mono<Void> onClose(Consumer<RsocketOperation> consumer) {
         return  Mono.fromRunnable(()->connection.getConnection().onDispose(()-> consumer.accept(this)));
     }
+
 }

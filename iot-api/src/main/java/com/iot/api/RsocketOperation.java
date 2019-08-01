@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.function.Consumer;
 
-public interface ServerOperation {
+public interface RsocketOperation {
 
     Mono<Disposable> close();
 
@@ -19,5 +19,5 @@ public interface ServerOperation {
 
     Mono<Void> pong();
 
-    Mono<Void> onClose(Consumer<ServerOperation> consumer);
+    Mono<Void> onClose(Consumer<RsocketOperation> consumer);
 }
