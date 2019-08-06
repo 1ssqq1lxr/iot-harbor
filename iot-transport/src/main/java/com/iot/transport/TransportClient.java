@@ -1,6 +1,7 @@
 package com.iot.transport;
 
 
+import com.iot.api.RsocketClientAbsOperation;
 import com.iot.config.ClientConfig;
 import com.iot.common.annocation.ProtocolType;
 import reactor.core.publisher.Mono;
@@ -39,11 +40,8 @@ public class TransportClient {
             return this;
         }
 
-        public TransportBuilder heart(int  heart, Consumer<ClientOperation> connectionConsumer){
-            return heart(heart);
-        }
 
-        public Mono<ClientOperation> connect(){
+        public Mono<RsocketClientAbsOperation> connect(){
             return transportFactory.connect(config);
         }
 

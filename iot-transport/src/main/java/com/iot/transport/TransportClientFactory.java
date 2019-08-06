@@ -1,5 +1,6 @@
 package com.iot.transport;
 
+import com.iot.api.RsocketClientAbsOperation;
 import com.iot.config.ClientConfig;
 import com.iot.protocol.ProtocolFactory;
 import com.iot.common.annocation.ProtocolType;
@@ -15,7 +16,7 @@ public class TransportClientFactory {
     }
 
 
-    public Mono<ClientOperation> connect(ClientConfig config) {
+    public Mono<RsocketClientAbsOperation> connect(ClientConfig config) {
         return  Mono.from(protocolFactory.getProtocol(ProtocolType.valueOf(config.getProtocol()))
                 .get().getTransport().connect(config));
     }
