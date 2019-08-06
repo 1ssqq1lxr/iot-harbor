@@ -1,4 +1,4 @@
-package com.iot.transport;
+package com.iot.transport.server;
 
 public class TransportServer  {
 
