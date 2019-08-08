@@ -1,4 +1,4 @@
-package com.iot.transport.connection;
+package com.iot.api.client;
 
 
 public class RsocketClientConnection {
