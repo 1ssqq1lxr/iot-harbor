@@ -1,6 +1,10 @@
 package com.iot.transport.handler;
 
 
+import com.iot.transport.handler.connect.ConnectHandler;
+import com.iot.transport.handler.heart.HeartHandler;
+import com.iot.transport.handler.pub.PubHandler;
+import com.iot.transport.handler.sub.SubHandler;
 import lombok.Getter;
 
 /**
@@ -10,16 +14,11 @@ import lombok.Getter;
 public enum HandlerType {
 
 
-        CONNECT(null),
-        PUB(null),
-        SUB(null),
-        HEART(null);
 
-     private DirectHandler directHandler;
-
-     HandlerType(DirectHandler directHandler){
-        this.directHandler=directHandler;
-     }
+    CONNECT(),
+    PUB(),
+    SUB(),
+    HEART();
 
 
 

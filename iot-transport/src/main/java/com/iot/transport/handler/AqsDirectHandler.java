@@ -16,4 +16,8 @@ public class AqsDirectHandler implements  DirectHandler {
     public Mono<Void> handler(TransportMessage message) {
         return directHandler.handler(message);
     }
+
+     public  DirectHandlerAdaptor  load(){
+        return  DirectHandlerFactory::new;
+     }
 }

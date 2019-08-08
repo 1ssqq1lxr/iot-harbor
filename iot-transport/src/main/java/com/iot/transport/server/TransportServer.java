@@ -1,6 +1,7 @@
 package com.iot.transport.server;
 
 
+import com.iot.api.RsocketChannelManager;
 import com.iot.api.RsocketServerAbsOperation;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.config.RsocketServerConfig;
@@ -47,6 +48,13 @@ public class TransportServer  {
 
         public TransportServer.TransportBuilder auth(BiFunction<String,String,Boolean> auth){
             config.setAuth(auth);
+            return this;
+        }
+
+
+
+        public   TransportServer.TransportBuilder channelManager(RsocketChannelManager rsocketChannelManager){
+            config.setChannelManager(rsocketChannelManager);
             return this;
         }
 
