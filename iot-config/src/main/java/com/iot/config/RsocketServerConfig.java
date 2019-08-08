@@ -4,6 +4,8 @@ import com.iot.api.RsocketConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.function.BiFunction;
+
 @Getter
 @Setter
 public class RsocketServerConfig implements RsocketConfiguration {
@@ -19,6 +21,8 @@ public class RsocketServerConfig implements RsocketConfiguration {
     private boolean log;
 
     private boolean ssl;
+
+    private BiFunction<String,String,Boolean> auth;
 
 
 
