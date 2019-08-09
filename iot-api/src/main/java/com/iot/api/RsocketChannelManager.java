@@ -11,11 +11,8 @@ public interface RsocketChannelManager extends Disposable {
 
      TransportConnection       getConnection(String clientId);
 
-     List<TransportConnection>  getConnectionsByTopic(String topic);
-
      void  addConnection(String clientId,TransportConnection connection);
 
-     void  addTopicConnection(String topic,TransportConnection connection);
 
 
 
