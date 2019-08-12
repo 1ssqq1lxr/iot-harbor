@@ -1,10 +1,11 @@
 package com.iot.protocol;
 
-import com.iot.api.RsocketClientAbsOperation;
 import com.iot.api.RsocketConfiguration;
-import com.iot.api.RsocketServerAbsOperation;
+import com.iot.common.connection.TransportConnection;
 import reactor.core.publisher.Mono;
-
+import reactor.core.publisher.UnicastProcessor;
+import reactor.netty.Connection;
+import reactor.netty.DisposableServer;
 
 
 public abstract class ProtocolTransport {
@@ -15,8 +16,8 @@ public abstract class ProtocolTransport {
         this.protocol=protocol;
     }
 
-    public abstract Mono<? extends RsocketServerAbsOperation> start(RsocketConfiguration config);
+    public abstract Mono<? extends DisposableServer> start(RsocketConfiguration config, UnicastProcessor<TransportConnection> connections);
 
-    public abstract Mono<? extends RsocketClientAbsOperation> connect(RsocketConfiguration config);
+    public abstract Mono<Connection> connect(RsocketConfiguration config);
 
 }

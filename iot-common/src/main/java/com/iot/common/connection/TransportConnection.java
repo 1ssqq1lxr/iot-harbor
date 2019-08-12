@@ -1,14 +1,16 @@
 package com.iot.common.connection;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import reactor.core.publisher.Flux;
 import reactor.netty.Connection;
 import reactor.netty.NettyInbound;
 import reactor.netty.NettyOutbound;
 
-@Builder
 @Getter
+@Setter
+@ToString
 public class TransportConnection {
 
     private NettyInbound inbound;
@@ -19,6 +21,12 @@ public class TransportConnection {
 
     public <T> Flux<T> receive(Class<T> tClass){
         return  inbound.receive().cast(tClass);
+    }
+
+    public  TransportConnection(Connection connection){
+        this.connection=connection;
+        this.inbound=connection.inbound();
+        this.outbound=connection.outbound();
     }
 
 
