@@ -15,13 +15,19 @@ public enum HandlerType {
 
 
 
-    CONNECT(),
-    PUB(),
-    SUB(),
-    HEART();
 
+    CONNECT(new ConnectHandler()),
+    PUB(new PubHandler()),
+    SUB(new SubHandler()),
+    HEART(new HeartHandler());
 
+    private  DirectHandler directHandler;
 
+    HandlerType(DirectHandler directHandler) {
+        this.directHandler = directHandler;
+    }
 
-
+    public DirectHandler getDirectHandler() {
+        return directHandler;
+    }
 }
