@@ -2,6 +2,7 @@ package com.iot.config;
 
 import com.iot.api.RsocketChannelManager;
 import com.iot.api.RsocketConfiguration;
+import com.iot.api.RsocketTopicManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,5 +27,7 @@ public class RsocketServerConfig implements RsocketConfiguration {
     private BiFunction<String,String,Boolean> auth;
 
     private RsocketChannelManager channelManager ;
+
+    private RsocketTopicManager topicManager ;
 
 }
