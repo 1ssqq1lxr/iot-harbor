@@ -53,12 +53,6 @@ public class TransportServer  {
 
 
 
-        public   TransportServer.TransportBuilder channelManager(RsocketChannelManager rsocketChannelManager){
-            config.setChannelManager(rsocketChannelManager);
-            return this;
-        }
-
-
         public Mono<RsocketServerAbsOperation> start(){
             return transportFactory.connect(config);
         }

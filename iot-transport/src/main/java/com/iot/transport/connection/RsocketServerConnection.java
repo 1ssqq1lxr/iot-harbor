@@ -1,8 +1,12 @@
-package com.iot.api.server;
+package com.iot.transport.connection;
 
 
+import com.iot.api.RsocketChannelManager;
+import com.iot.api.RsocketMessageHandler;
 import com.iot.api.RsocketServerAbsOperation;
+import com.iot.api.RsocketTopicManager;
 import com.iot.common.connection.TransportConnection;
+import com.iot.transport.handler.MessageRouter;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,11 +21,18 @@ public class RsocketServerConnection extends RsocketServerAbsOperation {
 
     private DisposableServer disposableServer;
 
+    private MessageRouter messageRouter;
+
+    private RsocketChannelManager channelManager;
+
+    private RsocketTopicManager  topicManager;
+
+    private RsocketMessageHandler rsocketMessageHandler;
+
 
     public  RsocketServerConnection(UnicastProcessor<TransportConnection> connections, DisposableServer server){
         this.disposableServer=server;
         connections.subscribe();
-
     }
 
     @Override

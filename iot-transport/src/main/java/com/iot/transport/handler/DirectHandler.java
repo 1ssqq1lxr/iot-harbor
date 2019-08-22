@@ -1,10 +1,10 @@
 package com.iot.transport.handler;
 
-import com.iot.common.message.TransportMessage;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import reactor.core.publisher.Mono;
 
 public interface DirectHandler {
 
-    Mono<Void> handler(TransportMessage message);
+    Mono<Void> handler(MqttMessage message);
 
 }

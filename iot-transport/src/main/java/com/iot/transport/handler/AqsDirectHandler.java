@@ -1,6 +1,6 @@
 package com.iot.transport.handler;
 
-import com.iot.common.message.TransportMessage;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import reactor.core.publisher.Mono;
 
 public class AqsDirectHandler implements  DirectHandler {
@@ -13,7 +13,7 @@ public class AqsDirectHandler implements  DirectHandler {
 
 
     @Override
-    public Mono<Void> handler(TransportMessage message) {
+    public Mono<Void> handler(MqttMessage message) {
         return directHandler.handler(message);
     }
 

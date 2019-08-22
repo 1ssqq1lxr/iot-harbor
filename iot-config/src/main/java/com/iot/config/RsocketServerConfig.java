@@ -26,8 +26,8 @@ public class RsocketServerConfig implements RsocketConfiguration {
 
     private BiFunction<String,String,Boolean> auth;
 
-    private RsocketChannelManager channelManager ;
 
-    private RsocketTopicManager topicManager ;
+
+
 
 }
