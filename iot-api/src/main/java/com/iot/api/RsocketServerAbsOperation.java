@@ -11,13 +11,10 @@ import java.util.List;
 public abstract class RsocketServerAbsOperation implements  RsocketOperation, Disposable {
 
 
-    public  abstract Flux<TransportConnection> onConnect();
-
     public  abstract  Mono<List<TransportConnection>> getConnections();
 
     public  abstract  Mono<Void> closeConnect(String clientId);
 
-    public  abstract   Flux<TransportConnection>   onClose();
 
 
 

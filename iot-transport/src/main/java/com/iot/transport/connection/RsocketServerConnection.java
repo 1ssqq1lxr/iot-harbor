@@ -1,10 +1,7 @@
 package com.iot.transport.connection;
 
 
-import com.iot.api.RsocketChannelManager;
-import com.iot.api.RsocketMessageHandler;
-import com.iot.api.RsocketServerAbsOperation;
-import com.iot.api.RsocketTopicManager;
+import com.iot.api.*;
 import com.iot.common.connection.TransportConnection;
 import com.iot.config.RsocketServerConfig;
 import com.iot.transport.handler.MessageRouter;
@@ -13,8 +10,11 @@ import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.UnicastProcessor;
+import reactor.netty.Connection;
 import reactor.netty.DisposableServer;
+import reactor.netty.NettyInbound;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,28 +33,32 @@ public class RsocketServerConnection extends RsocketServerAbsOperation {
     private RsocketServerConfig config;
 
 
-    private ConcurrentHashMap<String,TransportConnection> connections= new ConcurrentHashMap<>();
-
     private MessageRouter messageRouter;
 
     public  RsocketServerConnection(UnicastProcessor<TransportConnection> connections, DisposableServer server, RsocketServerConfig config){
         this.disposableServer=server;
         this.config=config;
         this.rsocketMessageHandler=config.getMessageHandler();
-        this.messageRouter= new MessageRouter();
+        this.topicManager = new MemoryTopicManager();
+        this.channelManager= new MemoryChannelManager();
+        this.messageRouter= new MessageRouter(topicManager,rsocketMessageHandler,channelManager);
         connections.subscribe(this::subscribe);
 
     }
 
     private void  subscribe(TransportConnection connection){
-        connection.getInbound().receiveObject().cast(MqttMessage.class)
-                .subscribe(messageRouter::handler);
+        NettyInbound inbound=connection.getInbound();
+        Connection c =connection.getConnection();
+        Disposable disposable = Mono.fromRunnable(()-> c.dispose())// 定时关闭
+                .delaySubscription(Duration.ofSeconds(10))
+                .subscribe();
+        c.channel().attr(AttributeKeys.connectionAttributeKey).set(connection); // 设置connection
+        c.channel().attr(AttributeKeys.closeConnection).set(disposable);   // 设置close
+        connection.getConnection().onReadIdle(config.getHeart(),()->connection.getConnection().dispose()); // 心跳超时关闭
+        inbound.receiveObject().cast(MqttMessage.class)
+                .subscribe(message->messageRouter.handler(message,connection));
     }
 
-    @Override
-    public Flux<TransportConnection> onConnect() {
-        return null;
-    }
 
     @Override
     public Mono<List<TransportConnection>> getConnections() {
@@ -66,16 +70,6 @@ public class RsocketServerConnection extends RsocketServerAbsOperation {
         return null;
     }
 
-    @Override
-    public Flux<TransportConnection> onClose() {
-        return null;
-    }
-
-
-    @Override
-    public Mono<Disposable> close() {
-        return null;
-    }
 
     @Override
     public Mono<Void> onClose(Disposable disposable) {
