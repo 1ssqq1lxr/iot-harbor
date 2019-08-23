@@ -1,7 +1,7 @@
 package com.iot.transport.server;
 
 
-import com.iot.api.RsocketChannelManager;
+import com.iot.api.RsocketMessageHandler;
 import com.iot.api.RsocketServerAbsOperation;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.config.RsocketServerConfig;
@@ -52,6 +52,10 @@ public class TransportServer  {
         }
 
 
+        public TransportServer.TransportBuilder messageHandler(RsocketMessageHandler messageHandler ){
+            config.setMessageHandler(messageHandler);
+            return this;
+        }
 
         public Mono<RsocketServerAbsOperation> start(){
             return transportFactory.connect(config);

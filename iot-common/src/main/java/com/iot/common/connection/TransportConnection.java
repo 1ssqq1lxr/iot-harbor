@@ -28,6 +28,4 @@ public class TransportConnection {
         this.inbound=connection.inbound();
         this.outbound=connection.outbound();
     }
-
-
 }

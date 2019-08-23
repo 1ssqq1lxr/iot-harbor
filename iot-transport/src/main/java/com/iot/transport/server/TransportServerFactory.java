@@ -17,18 +17,21 @@ public class TransportServerFactory {
 
     private UnicastProcessor<TransportConnection> unicastProcessor =UnicastProcessor.create();
 
+    private RsocketServerConfig config;
+
     public TransportServerFactory(){
         protocolFactory = new ProtocolFactory();
     }
 
 
     public Mono<RsocketServerAbsOperation> connect(RsocketServerConfig config) {
+        this.config =config;
         return  Mono.from(protocolFactory.getProtocol(ProtocolType.valueOf(config.getProtocol()))
                 .get().getTransport().start(config,unicastProcessor)).map(this::wrapper);
     }
 
     private  RsocketServerAbsOperation wrapper(DisposableServer server){
-        return  new RsocketServerConnection(unicastProcessor,server);
+        return  new RsocketServerConnection(unicastProcessor,server,config);
     }
 
 

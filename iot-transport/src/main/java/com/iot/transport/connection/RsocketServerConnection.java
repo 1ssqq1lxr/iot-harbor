@@ -6,7 +6,9 @@ import com.iot.api.RsocketMessageHandler;
 import com.iot.api.RsocketServerAbsOperation;
 import com.iot.api.RsocketTopicManager;
 import com.iot.common.connection.TransportConnection;
+import com.iot.config.RsocketServerConfig;
 import com.iot.transport.handler.MessageRouter;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,14 +16,13 @@ import reactor.core.publisher.UnicastProcessor;
 import reactor.netty.DisposableServer;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RsocketServerConnection extends RsocketServerAbsOperation {
 
 
-
     private DisposableServer disposableServer;
 
-    private MessageRouter messageRouter;
 
     private RsocketChannelManager channelManager;
 
@@ -29,10 +30,25 @@ public class RsocketServerConnection extends RsocketServerAbsOperation {
 
     private RsocketMessageHandler rsocketMessageHandler;
 
+    private RsocketServerConfig config;
 
-    public  RsocketServerConnection(UnicastProcessor<TransportConnection> connections, DisposableServer server){
+
+    private ConcurrentHashMap<String,TransportConnection> connections= new ConcurrentHashMap<>();
+
+    private MessageRouter messageRouter;
+
+    public  RsocketServerConnection(UnicastProcessor<TransportConnection> connections, DisposableServer server, RsocketServerConfig config){
         this.disposableServer=server;
-        connections.subscribe();
+        this.config=config;
+        this.rsocketMessageHandler=config.getMessageHandler();
+        this.messageRouter= new MessageRouter();
+        connections.subscribe(this::subscribe);
+
+    }
+
+    private void  subscribe(TransportConnection connection){
+        connection.getInbound().receiveObject().cast(MqttMessage.class)
+                .subscribe(messageRouter::handler);
     }
 
     @Override
