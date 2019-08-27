@@ -2,13 +2,12 @@ package com.iot.transport.queue;
 
 
 import com.lmax.disruptor.EventHandler;
-import com.lxr.iot.bootstrap.bean.SendMqttMessage;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.mqtt.*;
-import org.springframework.stereotype.Component;
 
-@Component
+import static io.netty.handler.codec.mqtt.MqttMessageType.PUBREC;
+
 public class MessageHandler implements EventHandler<MessageEvent> {
 
     private final MessageTransfer messageTransfer;
@@ -30,7 +29,7 @@ public class MessageHandler implements EventHandler<MessageEvent> {
                     sendAck(MqttMessageType.PUBREL,message);
                     break;
                 case PUBREC:
-                    sendAck(MqttMessageType.PUBREC,message);
+                    sendAck(PUBREC,message);
                     break;
             }
         }

@@ -24,7 +24,7 @@ public class MessageRouter  {
     public Mono<Void> handler(MqttMessage message, TransportConnection connection) {
         DirectHandlerAdaptor  handlerAdaptor= handlerAdaptor();
         DirectHandler handler=handlerAdaptor.handler(message.fixedHeader().messageType()).loadHandler();
-        return handler.handler(message);
+        return handler.handler(message,connection);
     }
 
 

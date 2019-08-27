@@ -6,12 +6,10 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.stereotype.Component;
 
 
-@Component
-public class DisruptorMessageStarter implements  MessageStarter<MessageEvent> , DisposableBean {
+
+public class DisruptorMessageStarter implements  MessageStarter<MessageEvent>  {
 
 
     private  Disruptor<MessageEvent> disruptor = new Disruptor<>(MessageEvent::new,
@@ -37,9 +35,4 @@ public class DisruptorMessageStarter implements  MessageStarter<MessageEvent> , 
         disruptor.shutdown();
     }
 
-
-    @Override
-    public void destroy() throws Exception {
-        shutdown();
-    }
 }
