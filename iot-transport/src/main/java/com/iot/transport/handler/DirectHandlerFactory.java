@@ -20,30 +20,24 @@ public class DirectHandlerFactory {
     public  DirectHandler  loadHandler(){
         switch (messageType){
             case PUBACK:
-                return new PubHandler();
             case PUBREC:
-                return new PubHandler();
             case PUBREL:
-                return new PubHandler();
-            case SUBACK:
-                return new SubHandler();
-            case CONNACK:
-                return new ConnectHandler();
-            case PINGREQ:
-                return new HeartHandler();
+            case PUBLISH:
             case PUBCOMP:
                 return new PubHandler();
-            case PUBLISH:
-                return new PubHandler();
-            case PINGRESP:
-                return new HeartHandler();
-            case UNSUBACK:
-                return new SubHandler();
-            case SUBSCRIBE:
-                return new SubHandler();
+
+            case CONNACK:
             case DISCONNECT:
                 return new ConnectHandler();
+
+            case PINGREQ:
+            case PINGRESP:
+                return new HeartHandler();
+
+            case UNSUBACK:
+            case SUBSCRIBE:
             case UNSUBSCRIBE:
+            case SUBACK:
                 return new SubHandler();
         }
         throw  new NotSuppportHandlerException(messageType+" not support ");
