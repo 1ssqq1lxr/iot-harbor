@@ -16,6 +16,7 @@ import reactor.netty.NettyInbound;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RsocketServerConnection extends RsocketServerAbsOperation {
@@ -39,9 +40,9 @@ public class RsocketServerConnection extends RsocketServerAbsOperation {
         this.disposableServer=server;
         this.config=config;
         this.rsocketMessageHandler=config.getMessageHandler();
-        this.topicManager = new MemoryTopicManager();
-        this.channelManager= new MemoryChannelManager();
-        this.messageRouter= new MessageRouter(topicManager,rsocketMessageHandler,channelManager);
+        this.topicManager = Optional.ofNullable(config.getTopicManager()).orElse(new MemoryTopicManager());
+        this.channelManager= Optional.ofNullable(config.getChannelManager()).orElse(new MemoryChannelManager());
+        this.messageRouter= new MessageRouter(config);
         connections.subscribe(this::subscribe);
 
     }

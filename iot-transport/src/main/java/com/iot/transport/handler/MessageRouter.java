@@ -1,30 +1,25 @@
 package com.iot.transport.handler;
 
-import com.iot.api.RsocketChannelManager;
-import com.iot.api.RsocketMessageHandler;
-import com.iot.api.RsocketTopicManager;
 import com.iot.common.connection.TransportConnection;
+import com.iot.config.RsocketServerConfig;
 import io.netty.handler.codec.mqtt.MqttMessage;
+import lombok.Getter;
 import reactor.core.publisher.Mono;
 
+@Getter
 public class MessageRouter  {
 
-    private  RsocketTopicManager topicManager;
 
-    private  RsocketMessageHandler rsocketMessageHandler;
+    private final RsocketServerConfig config;
 
-    private  RsocketChannelManager channelManager;
-
-    public MessageRouter(RsocketTopicManager topicManager, RsocketMessageHandler rsocketMessageHandler, RsocketChannelManager channelManager) {
-        this.topicManager=topicManager;
-        this.rsocketMessageHandler=rsocketMessageHandler;
-        this.channelManager=channelManager;
+    public MessageRouter(RsocketServerConfig config) {
+        this.config=config;
     }
 
     public Mono<Void> handler(MqttMessage message, TransportConnection connection) {
         DirectHandlerAdaptor  handlerAdaptor= handlerAdaptor();
         DirectHandler handler=handlerAdaptor.handler(message.fixedHeader().messageType()).loadHandler();
-        return handler.handler(message,connection);
+        return handler.handler(message,connection,config);
     }
 
 

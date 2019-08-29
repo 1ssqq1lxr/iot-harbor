@@ -5,6 +5,9 @@ import reactor.core.Disposable;
 
 import java.util.List;
 
+/**
+ * manage topic
+ */
 public interface RsocketTopicManager extends Disposable {
 
      List<TransportConnection>  getConnectionsByTopic(String topic);
