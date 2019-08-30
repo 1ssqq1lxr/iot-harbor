@@ -1,6 +1,5 @@
 package com.iot.common.message;
 
-import com.iot.common.codec.ProtocolCatagory;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,17 +7,11 @@ import lombok.Getter;
 @Builder
 public class TransportMessage  {
 
-    private Object message;
+   private String topic;
 
-    private String deviceId;
+   private String message;
 
-    private int messageId;
-
-    private long timestammp;
-
-    private String topic;
-
-    private ProtocolCatagory catagory;
+   private int   qos;
 
 
 }
