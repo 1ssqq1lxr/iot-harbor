@@ -1,11 +1,10 @@
-package com.iot.transport.handler;
+package com.iot.transport.server.handler;
 
 import com.iot.common.exception.NotSuppportHandlerException;
-import com.iot.protocol.mqtt.MqttProtocol;
-import com.iot.transport.handler.connect.ConnectHandler;
-import com.iot.transport.handler.heart.HeartHandler;
-import com.iot.transport.handler.pub.PubHandler;
-import com.iot.transport.handler.sub.SubHandler;
+import com.iot.transport.server.handler.connect.ConnectHandler;
+import com.iot.transport.server.handler.heart.HeartHandler;
+import com.iot.transport.server.handler.pub.PubHandler;
+import com.iot.transport.server.handler.sub.SubHandler;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 
 public class DirectHandlerFactory {
@@ -17,7 +16,7 @@ public class DirectHandlerFactory {
         this.messageType = messageType;
     }
 
-    public  DirectHandler  loadHandler(){
+    public DirectHandler loadHandler(){
         switch (messageType){
             case PUBACK:
             case PUBREC:
@@ -27,6 +26,7 @@ public class DirectHandlerFactory {
                 return new PubHandler();
 
             case CONNACK:
+            case CONNECT:
             case DISCONNECT:
                 return new ConnectHandler();
 

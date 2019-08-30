@@ -1,11 +1,11 @@
-package com.iot.transport.handler;
+package com.iot.transport.server.handler;
 
 import com.iot.common.connection.TransportConnection;
 import com.iot.config.RsocketServerConfig;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import reactor.core.publisher.Mono;
 
-public class AqsDirectHandler implements  DirectHandler {
+public class AqsDirectHandler implements DirectHandler {
 
     public final DirectHandler directHandler;
 

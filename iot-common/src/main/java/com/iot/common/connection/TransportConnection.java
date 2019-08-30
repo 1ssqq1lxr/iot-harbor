@@ -7,6 +7,7 @@ import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
@@ -16,7 +17,7 @@ import reactor.netty.NettyOutbound;
 @Getter
 @Setter
 @ToString
-public class TransportConnection {
+public class TransportConnection implements Disposable {
 
     private NettyInbound inbound;
 
@@ -51,5 +52,8 @@ public class TransportConnection {
     }
 
 
-
+    @Override
+    public void dispose() {
+        connection.dispose();
+    }
 }

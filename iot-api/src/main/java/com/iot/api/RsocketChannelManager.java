@@ -13,4 +13,5 @@ public interface RsocketChannelManager extends Disposable {
      void  addConnections(TransportConnection connection);
 
 
+     void removeConnections(TransportConnection connection);
 }
