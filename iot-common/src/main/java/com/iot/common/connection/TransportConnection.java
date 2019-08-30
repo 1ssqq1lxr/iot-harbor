@@ -1,5 +1,9 @@
 package com.iot.common.connection;
 
+import io.netty.handler.codec.mqtt.MqttFixedHeader;
+import io.netty.handler.codec.mqtt.MqttMessage;
+import io.netty.handler.codec.mqtt.MqttMessageType;
+import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -34,5 +38,18 @@ public class TransportConnection {
     public Mono<Void> write(Object object){
       return outbound.sendObject(outbound).then();
     }
+
+
+
+    public Mono<Void> sendPingReq(){
+        return outbound.sendObject(new MqttMessage(new MqttFixedHeader(MqttMessageType.PINGREQ, false, MqttQoS.AT_MOST_ONCE, false, 0))).then();
+    }
+
+
+    public Mono<Void> sendPingRes(){
+        return outbound.sendObject(new MqttMessage(new MqttFixedHeader(MqttMessageType.PINGRESP, false, MqttQoS.AT_MOST_ONCE, false, 0))).then();
+    }
+
+
 
 }

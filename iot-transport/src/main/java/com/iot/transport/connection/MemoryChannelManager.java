@@ -14,15 +14,10 @@ public class MemoryChannelManager implements RsocketChannelManager {
     }
 
     @Override
-    public TransportConnection getConnection(String clientId) {
-        return null;
-    }
-
-
-    @Override
-    public void addConnection(String clientId, TransportConnection connection) {
+    public void addConnections(TransportConnection connection) {
 
     }
+
 
     @Override
     public void dispose() {

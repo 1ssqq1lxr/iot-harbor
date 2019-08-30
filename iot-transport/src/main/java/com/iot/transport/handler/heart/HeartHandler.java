@@ -16,14 +16,14 @@ public class HeartHandler implements DirectHandler {
 
     @Override
     public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketServerConfig config) {
-        switch (message.fixedHeader().messageType()){
-            case PINGREQ:
-                MqttFixedHeader fixedHeader = new MqttFixedHeader(MqttMessageType.PINGRESP, false, MqttQoS.AT_MOST_ONCE, false, 0);
-                return connection.write(new MqttMessage(fixedHeader));
-            case PINGRESP:
-                log.info("accept pong{}",message.variableHeader());
-                return  Mono.empty();
-        }
-        return Mono.empty();
+        return Mono.fromRunnable(()->{
+            switch (message.fixedHeader().messageType()){
+                case PINGREQ:
+                     connection.sendPingRes().subscribe();
+                case PINGRESP:
+                    log.info("accept pong{}",message.variableHeader());
+            }
+        });
+
     }
 }
