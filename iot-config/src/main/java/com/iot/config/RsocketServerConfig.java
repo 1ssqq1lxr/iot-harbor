@@ -4,6 +4,8 @@ import com.iot.api.RsocketChannelManager;
 import com.iot.api.RsocketConfiguration;
 import com.iot.api.RsocketMessageHandler;
 import com.iot.api.RsocketTopicManager;
+import com.iot.api.server.connection.MemoryChannelManager;
+import com.iot.api.server.connection.MemoryTopicManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,9 +32,9 @@ public class RsocketServerConfig implements RsocketConfiguration {
 
     private RsocketMessageHandler messageHandler;
 
-    private RsocketChannelManager channelManager ;
+    private RsocketChannelManager channelManager = new MemoryChannelManager();
 
-    private RsocketTopicManager topicManager;
+    private RsocketTopicManager topicManager = new MemoryTopicManager();
 
 
 

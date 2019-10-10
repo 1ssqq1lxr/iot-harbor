@@ -9,9 +9,12 @@ public class TransportMessage  {
 
    private String topic;
 
-   private String message;
+   private byte[] message;
 
    private int   qos;
 
+   private boolean isRetain;
+
+   private boolean isDup;
 
 }

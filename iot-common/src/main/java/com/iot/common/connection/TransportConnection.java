@@ -14,6 +14,10 @@ import reactor.netty.Connection;
 import reactor.netty.NettyInbound;
 import reactor.netty.NettyOutbound;
 
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
+
 @Getter
 @Setter
 @ToString
@@ -24,6 +28,10 @@ public class TransportConnection implements Disposable {
     private NettyOutbound outbound;
 
     private Connection connection;
+
+    private LongAdder longAdder = new LongAdder();
+
+    private ConcurrentHashMap<Integer,Disposable> concurrentHashMap = new ConcurrentHashMap<>();
 
     public <T> Flux<T> receive(Class<T> tClass){
         return  inbound.receive().cast(tClass);
@@ -37,7 +45,7 @@ public class TransportConnection implements Disposable {
 
 
     public Mono<Void> write(Object object){
-      return outbound.sendObject(outbound).then();
+      return outbound.sendObject(object).then();
     }
 
 
@@ -51,6 +59,27 @@ public class TransportConnection implements Disposable {
         return outbound.sendObject(new MqttMessage(new MqttFixedHeader(MqttMessageType.PINGRESP, false, MqttQoS.AT_MOST_ONCE, false, 0))).then();
     }
 
+
+    public int messageId(){
+        longAdder.increment();
+        int value=longAdder.intValue();
+        if(value==Integer.MAX_VALUE){
+            longAdder.reset();
+            longAdder.increment();
+            return longAdder.intValue();
+        }
+        return value;
+    }
+
+
+    public  void  addDisposable(Integer messageId,Disposable disposable){
+        concurrentHashMap.put(messageId,disposable);
+    }
+
+    public  void  cancleDisposable(Integer messageId){
+        Optional.ofNullable(concurrentHashMap.get(messageId))
+                .ifPresent(dispose->dispose.dispose());
+    }
 
     @Override
     public void dispose() {

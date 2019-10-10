@@ -2,6 +2,8 @@ package com.iot.transport.server.connection;
 
 
 import com.iot.api.*;
+import com.iot.api.server.connection.MemoryChannelManager;
+import com.iot.api.server.connection.MemoryTopicManager;
 import com.iot.common.connection.TransportConnection;
 import com.iot.config.RsocketServerConfig;
 import com.iot.transport.server.handler.MessageRouter;
@@ -55,7 +57,8 @@ public class RsocketServerConnection extends RsocketServerAbsOperation {
         c.channel().attr(AttributeKeys.closeConnection).set(disposable);   // 设置close
         connection.getConnection().onReadIdle(config.getHeart(),()->connection.getConnection().dispose()); // 心跳超时关闭
         inbound.receiveObject().cast(MqttMessage.class)
-                .subscribe(message->messageRouter.handler(message,connection).subscribe());
+                .map(message -> messageRouter.handler(message,connection))
+                .subscribe();
     }
 
 

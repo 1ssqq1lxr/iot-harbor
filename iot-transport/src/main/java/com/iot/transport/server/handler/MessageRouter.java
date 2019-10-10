@@ -12,18 +12,16 @@ public class MessageRouter  {
 
     private final RsocketServerConfig config;
 
+    private final  DirectHandlerAdaptor directHandlerAdaptor;
+
     public MessageRouter(RsocketServerConfig config) {
         this.config=config;
+        this.directHandlerAdaptor= DirectHandlerFactory::new;
     }
 
     public Mono<Void> handler(MqttMessage message, TransportConnection connection) {
-        DirectHandlerAdaptor  handlerAdaptor= handlerAdaptor();
-        DirectHandler handler=handlerAdaptor.handler(message.fixedHeader().messageType()).loadHandler();
+        DirectHandler handler=directHandlerAdaptor.handler(message.fixedHeader().messageType()).loadHandler();
         return handler.handler(message,connection,config);
     }
 
-
-    private  DirectHandlerAdaptor  handlerAdaptor(){
-        return DirectHandlerFactory::new;
-    }
 }

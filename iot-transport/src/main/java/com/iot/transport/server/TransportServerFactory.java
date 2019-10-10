@@ -24,7 +24,7 @@ public class TransportServerFactory {
     }
 
 
-    public Mono<RsocketServerAbsOperation> connect(RsocketServerConfig config) {
+    public Mono<RsocketServerAbsOperation> start(RsocketServerConfig config) {
         this.config =config;
         return  Mono.from(protocolFactory.getProtocol(ProtocolType.valueOf(config.getProtocol()))
                 .get().getTransport().start(config,unicastProcessor)).map(this::wrapper);

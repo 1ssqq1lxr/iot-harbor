@@ -1,4 +1,4 @@
-package com.iot.transport.server.connection;
+package com.iot.api.server.connection;
 
 import com.iot.api.RsocketChannelManager;
 import com.iot.common.connection.TransportConnection;
@@ -15,6 +15,11 @@ public class MemoryChannelManager implements RsocketChannelManager {
 
     @Override
     public void addConnections(TransportConnection connection) {
+
+    }
+
+    @Override
+    public void removeConnections(TransportConnection connection) {
 
     }
 
