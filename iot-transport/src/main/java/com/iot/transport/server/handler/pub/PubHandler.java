@@ -39,18 +39,15 @@ public class PubHandler implements DirectHandler {
                         case AT_LEAST_ONCE:
                             MqttPubAckMessage mqttPubAckMessage = MqttMessageApi.buildPuback(header.isDup(), header.qosLevel(), header.isRetain(), variableHeader.messageId()); // back
                             connection.write(mqttPubAckMessage).subscribe();
-                            MqttPublishMessage mqttPublishMessage1 = MqttMessageApi.buildPub(false,MqttQoS.AT_MOST_ONCE, header.isRetain(), 1, variableHeader.topicName(), Unpooled.wrappedBuffer(bytes));
-                            connection.write(mqttPublishMessage1).subscribe();
                             config.getTopicManager().getConnectionsByTopic(variableHeader.topicName())
                                     .stream().filter(connection::equals).forEach(c -> {
                                 int id = c.messageId();
                                 c.addDisposable(id, Mono.fromRunnable(() ->
-                                        MqttMessageApi.buildPub(false, header.qosLevel(), header.isRetain(), c.messageId(), variableHeader.topicName(), Unpooled.wrappedBuffer(bytes)))
+                                        connection.write( MqttMessageApi.buildPub(true, header.qosLevel(), header.isRetain(), 1, variableHeader.topicName(), Unpooled.wrappedBuffer(bytes))).subscribe())
                                         .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe());
                                 MqttPublishMessage publishMessage = MqttMessageApi.buildPub(false, header.qosLevel(), header.isRetain(), id, variableHeader.topicName(), Unpooled.wrappedBuffer(byteBuf));
                                 c.write(publishMessage).subscribe();
                             });
-
                             break;
                         case FAILURE:
                             log.error(" publish FAILURE {} {} ", header, variableHeader);
