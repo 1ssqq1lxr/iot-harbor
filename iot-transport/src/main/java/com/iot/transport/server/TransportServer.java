@@ -10,15 +10,15 @@ import reactor.core.publisher.Mono;
 import java.util.function.BiFunction;
 
 public class TransportServer  {
-    private RsocketServerConfig config;
+    private static RsocketServerConfig config;
 
-    private TransportServerFactory transportFactory;
+    private static TransportServerFactory transportFactory;
 
 
     private  TransportServer(){
 
     }
-    private class TransportBuilder{
+    public  static class TransportBuilder{
 
         public TransportBuilder(){
             config = new RsocketServerConfig();
@@ -26,7 +26,7 @@ public class TransportServer  {
         }
 
         public TransportBuilder(String ip,int port){
-            super();
+            this();
             config.setIp(ip);
             config.setPort(port);
         }
@@ -46,6 +46,12 @@ public class TransportServer  {
             return this;
         }
 
+        public TransportServer.TransportBuilder log(boolean  log){
+            config.setLog(log);
+            return this;
+        }
+
+
         public TransportServer.TransportBuilder auth(BiFunction<String,String,Boolean> auth){
             config.setAuth(auth);
             return this;
@@ -62,11 +68,11 @@ public class TransportServer  {
         }
     }
 
-    public TransportServer.TransportBuilder create(String ip, int port){
+    public static TransportServer.TransportBuilder create(String ip, int port){
         return  new TransportServer.TransportBuilder(ip,port);
     }
 
-    public TransportServer.TransportBuilder create(){
+    public static  TransportServer.TransportBuilder create(){
         return  new TransportServer.TransportBuilder();
     }
 }

@@ -6,6 +6,7 @@ import com.iot.api.RsocketServerAbsOperation;
 import com.iot.common.connection.TransportConnection;
 import com.iot.protocol.ProtocolTransport;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
@@ -15,6 +16,8 @@ import reactor.core.publisher.UnicastProcessor;
 import reactor.netty.Connection;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpServer;
+
+import java.util.Objects;
 
 
 @Slf4j
@@ -28,7 +31,10 @@ public class MqttTransport extends ProtocolTransport {
     @Override
     public Mono<? extends DisposableServer> start(RsocketConfiguration config, UnicastProcessor<TransportConnection> connections) {
         return  buildServer(config)
-                .doOnConnection(connection -> connections.onNext(new TransportConnection(connection)))
+                .doOnConnection(connection ->{
+                    protocol.getHandlers().forEach(connection::addHandler);
+                    connections.onNext(new TransportConnection(connection));
+                })
                 .bind()
                 .doOnError(error->log.error("************************************************************* server error {}",error.getMessage()));
     }
@@ -40,14 +46,19 @@ public class MqttTransport extends ProtocolTransport {
                 .port(config.getPort())
                 .wiretap(config.isLog())
                 .host(config.getIp());
+            return  config.isSsl()?server.secure(sslContextSpec -> sslContextSpec.sslContext(Objects.requireNonNull(buildContext()))):server;
+
+    }
+
+
+    private  SslContext buildContext(){
         try {
-            SelfSignedCertificate ssc = new SelfSignedCertificate();
-            SslContext sslServer = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
-            return  config.isSsl()?server.secure(sslContextSpec -> sslContextSpec.sslContext(sslServer)):server;
+        SelfSignedCertificate ssc = new SelfSignedCertificate();
+        return SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
         }catch (Exception e){
             log.error("*******************************************************************ssl error: {}",e.getMessage());
-            return  server;
         }
+        return null;
     }
 
     @Override

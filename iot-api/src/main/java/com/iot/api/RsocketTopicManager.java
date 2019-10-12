@@ -15,7 +15,7 @@ public interface RsocketTopicManager extends Disposable {
      void  addTopicConnection(String topic, TransportConnection connection);
 
 
-
+     void  deleteTopicConnection(String topic, TransportConnection connection);
 
 
 }

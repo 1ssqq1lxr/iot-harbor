@@ -14,6 +14,7 @@
     <module>iot-protocol</module>
     <module>iot-config</module>
       <module>iot-api</module>
+      <module>iot-test</module>
   </modules>
 
   <name>iot-harbor</name>
@@ -53,11 +54,13 @@
         <version>${lombok}</version>
       </dependency>
       <!-- https://mvnrepository.com/artifact/io.netty/netty-codec-mqtt -->
+      <!-- https://mvnrepository.com/artifact/io.netty/netty-codec-mqtt -->
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-codec-mqtt</artifactId>
-        <version>5.0.0.Alpha2</version>
+        <version>4.1.42.Final</version>
       </dependency>
+
       <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
       <dependency>
         <groupId>org.projectlombok</groupId>

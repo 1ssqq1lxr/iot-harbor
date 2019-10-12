@@ -3,6 +3,8 @@ package com.iot.api;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.*;
 
+import java.util.List;
+
 
 public class MqttMessageApi {
 
@@ -20,6 +22,27 @@ public class MqttMessageApi {
         MqttMessageIdVariableHeader mqttMessageIdVariableHeader = MqttMessageIdVariableHeader.from(messageId);
         MqttPubAckMessage mqttPubAckMessage = new MqttPubAckMessage(mqttFixedHeader,mqttMessageIdVariableHeader);
         return  mqttPubAckMessage;
+    }
+
+    public  static  MqttSubAckMessage buildSubAck(int messageId, List<Integer> qos){
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.SUBACK, false, MqttQoS.AT_MOST_ONCE, false, 0);
+        MqttMessageIdVariableHeader variableHeader = MqttMessageIdVariableHeader.from(messageId);
+        MqttSubAckPayload payload = new MqttSubAckPayload(qos);
+        return new MqttSubAckMessage(mqttFixedHeader, variableHeader, payload);
+    }
+
+
+    public static  MqttUnsubAckMessage buildUnsubAck(int messageId){
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.UNSUBACK, false, MqttQoS.AT_MOST_ONCE, false, 0x02);
+        MqttMessageIdVariableHeader variableHeader = MqttMessageIdVariableHeader.from(messageId);
+        return new MqttUnsubAckMessage(mqttFixedHeader, variableHeader);
+    }
+
+    public  static  MqttConnAckMessage buildConnectAck(MqttConnectReturnCode connectReturnCode){
+        MqttConnAckVariableHeader mqttConnAckVariableHeader = new MqttConnAckVariableHeader(connectReturnCode,true);
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(
+                MqttMessageType.CONNACK,false, MqttQoS.AT_MOST_ONCE, false, 0x02);
+        return new MqttConnAckMessage(mqttFixedHeader, mqttConnAckVariableHeader);
     }
 
 

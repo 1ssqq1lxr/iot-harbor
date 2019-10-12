@@ -13,6 +13,6 @@ public interface Protocol {
 
     ProtocolTransport getTransport();
 
-    List<Class<? extends ChannelHandler>> getHandlers();
+    List<ChannelHandler> getHandlers();
 
 }
