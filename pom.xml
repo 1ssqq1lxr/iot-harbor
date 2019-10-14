@@ -105,6 +105,13 @@
         <scope>compile</scope>
       </dependency>
 
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>25.1-jre</version>
+      </dependency>
+
+
 
     </dependencies>
     <!-- https://mvnrepository.com/artifact/io.projectreactor.netty/reactor-netty -->

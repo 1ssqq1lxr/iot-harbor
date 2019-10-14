@@ -9,6 +9,7 @@ import java.util.List;
 
 public class MemoryTopicManager implements RsocketTopicManager {
 
+   
 
     @Override
     public List<TransportConnection> getConnectionsByTopic(String topic) {
@@ -25,8 +26,4 @@ public class MemoryTopicManager implements RsocketTopicManager {
 
     }
 
-    @Override
-    public void dispose() {
-
-    }
 }

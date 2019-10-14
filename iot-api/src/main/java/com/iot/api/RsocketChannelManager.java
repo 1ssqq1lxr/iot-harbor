@@ -5,7 +5,7 @@ import reactor.core.Disposable;
 
 import java.util.List;
 
-public interface RsocketChannelManager extends Disposable {
+public interface RsocketChannelManager  {
 
      List<TransportConnection> getConnections();
 

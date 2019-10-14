@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * manage topic
  */
-public interface RsocketTopicManager extends Disposable {
+public interface RsocketTopicManager  {
 
      List<TransportConnection>  getConnectionsByTopic(String topic);
 
