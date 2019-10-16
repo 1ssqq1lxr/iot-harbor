@@ -3,6 +3,7 @@ package com.iot.transport.server.handler.connect;
 import com.iot.api.AttributeKeys;
 import com.iot.api.MqttMessageApi;
 import com.iot.api.RsocketChannelManager;
+import com.iot.api.RsocketMessageHandler;
 import com.iot.common.connection.TransportConnection;
 import com.iot.config.RsocketServerConfig;
 import com.iot.transport.server.handler.DirectHandler;
@@ -46,7 +47,6 @@ public class ConnectHandler implements DirectHandler {
                 .map(Attribute::get)
                 .ifPresent(Disposable::dispose);
         channelManager.addConnections(connection);
-        connection.write( MqttMessageApi.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED)).subscribe();
         connection.write( MqttMessageApi.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED)).subscribe();
     }
 }
