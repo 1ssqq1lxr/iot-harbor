@@ -5,6 +5,7 @@ import com.iot.api.RsocketConfiguration;
 import com.iot.api.RsocketMessageHandler;
 import com.iot.api.RsocketTopicManager;
 import com.iot.api.server.connection.MemoryChannelManager;
+import com.iot.api.server.connection.MemoryMessageHandler;
 import com.iot.api.server.connection.MemoryTopicManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +31,7 @@ public class RsocketServerConfig implements RsocketConfiguration {
     private BiFunction<String,String,Boolean> auth;
 
 
-    private RsocketMessageHandler messageHandler;
+    private RsocketMessageHandler messageHandler = new MemoryMessageHandler();
 
     private RsocketChannelManager channelManager = new MemoryChannelManager();
 
