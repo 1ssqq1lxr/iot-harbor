@@ -17,7 +17,7 @@ public class ServerTest {
               .auth((s,p)->true)
               .heart(100000)
               .protocol(ProtocolType.MQTT)
-              .ssl(true)
+              .ssl(false)
               .auth((username,password)->true)
               .log(true)
               .messageHandler(new MemoryMessageHandler())

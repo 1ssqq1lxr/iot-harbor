@@ -58,8 +58,7 @@ public class RsocketServerConnection extends RsocketServerAbsOperation {
         c.channel().attr(AttributeKeys.closeConnection).set(disposable);   // 设置close
         connection.getConnection().onReadIdle(config.getHeart(),()->connection.getConnection().dispose()); // 心跳超时关闭
         inbound.receiveObject().cast(MqttMessage.class)
-                .map(message -> messageRouter.handler(message,connection).subscribe())
-                .subscribe();
+                .subscribe(message -> messageRouter.handler(message,connection).subscribe());
     }
 
 

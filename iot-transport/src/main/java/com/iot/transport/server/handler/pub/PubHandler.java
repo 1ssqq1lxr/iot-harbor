@@ -56,23 +56,24 @@ public class PubHandler implements DirectHandler {
                                     .qos(header.qosLevel().value())
                                     .build();
                             connection.saveQos2Message(messageId,transportMessage);
+                            break;
                         case FAILURE:
                             log.error(" publish FAILURE {} {} ", header, variableHeader);
                             break;
                     }
                     break;
                 case PUBACK:
-                    MqttPubAckMessage mqttPubAckMessage = (MqttPubAckMessage) message;
-                    connection.cancleDisposable(mqttPubAckMessage.variableHeader().messageId());
+                    MqttMessageIdVariableHeader Back = (MqttMessageIdVariableHeader) message.variableHeader();
+                    connection.cancleDisposable(Back.messageId());
                     break;
                 case PUBREC:
-                    MqttPubAckMessage recMessage = (MqttPubAckMessage) message;
-                    int id=recMessage.variableHeader().messageId();
+                    MqttMessageIdVariableHeader recVH = (MqttMessageIdVariableHeader) message.variableHeader();
+                    int id=recVH.messageId();
                     connection.write( MqttMessageApi.buildPubRel(id)).subscribe();  //  send rel
                     break;
                 case PUBREL:
-                    MqttPubAckMessage ackMessage = (MqttPubAckMessage) message;
-                    MqttPubAckMessage mqttPubRecMessage = MqttMessageApi.buildPubComp(ackMessage.variableHeader().messageId());
+                    MqttMessageIdVariableHeader RelVH = (MqttMessageIdVariableHeader) message.variableHeader();
+                    MqttPubAckMessage mqttPubRecMessage = MqttMessageApi.buildPubComp(RelVH.messageId());
                     connection.write(mqttPubRecMessage).subscribe();  //  send rec
                     if(!header.isDup()) { // 不是重发
                         MqttPubAckMessage  rel = (MqttPubAckMessage)message;
@@ -82,8 +83,8 @@ public class PubHandler implements DirectHandler {
                     }
                     break;
                 case PUBCOMP:
-                    MqttPubAckMessage  compMessage = (MqttPubAckMessage) message;
-                    connection.cancleDisposable(compMessage.variableHeader().messageId());
+                    MqttMessageIdVariableHeader compVH = (MqttMessageIdVariableHeader) message.variableHeader();
+                    connection.cancleDisposable(compVH.messageId());
                     break;
             }
         });
