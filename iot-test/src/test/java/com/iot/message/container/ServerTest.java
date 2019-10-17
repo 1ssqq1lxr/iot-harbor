@@ -1,4 +1,4 @@
-package com.iot.message;
+package com.iot.message.container;
 
 import com.iot.api.server.connection.MemoryMessageHandler;
 import com.iot.common.annocation.ProtocolType;

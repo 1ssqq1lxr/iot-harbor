@@ -109,4 +109,8 @@ public class TransportConnection implements Disposable {
     public void dispose() {
         connection.dispose();
     }
+
+    public boolean isDispose(){
+        return connection.isDisposed();
+    }
 }

@@ -15,6 +15,7 @@
     <module>iot-config</module>
       <module>iot-api</module>
       <module>iot-test</module>
+    <module>iot-container</module>
   </modules>
 
   <name>iot-harbor</name>
