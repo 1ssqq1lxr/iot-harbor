@@ -24,6 +24,26 @@ public class MqttMessageApi {
         return  mqttPubAckMessage;
     }
 
+    public static  MqttPubAckMessage buildPubRec(int messageId){
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBREC,false, MqttQoS.AT_LEAST_ONCE,false,0x02);
+        MqttMessageIdVariableHeader from = MqttMessageIdVariableHeader.from(messageId);
+        return new MqttPubAckMessage(mqttFixedHeader,from);
+    }
+
+    public static  MqttPubAckMessage buildPubRel(int messageId){
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBREL,false, MqttQoS.AT_LEAST_ONCE,false,0x02);
+        MqttMessageIdVariableHeader from = MqttMessageIdVariableHeader.from(messageId);
+        return new MqttPubAckMessage(mqttFixedHeader,from);
+    }
+
+
+    public static  MqttPubAckMessage buildPubComp(int messageId){
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBCOMP,false, MqttQoS.AT_MOST_ONCE,false,0x02);
+        MqttMessageIdVariableHeader from = MqttMessageIdVariableHeader.from(messageId);
+        return new MqttPubAckMessage(mqttFixedHeader,from);
+    }
+
+
     public  static  MqttSubAckMessage buildSubAck(int messageId, List<Integer> qos){
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.SUBACK, false, MqttQoS.AT_MOST_ONCE, false, 0);
         MqttMessageIdVariableHeader variableHeader = MqttMessageIdVariableHeader.from(messageId);

@@ -1,5 +1,6 @@
 package com.iot.common.connection;
 
+import com.iot.common.message.TransportMessage;
 import io.netty.handler.codec.mqtt.MqttFixedHeader;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
@@ -31,7 +32,10 @@ public class TransportConnection implements Disposable {
 
     private LongAdder longAdder = new LongAdder();
 
-    private ConcurrentHashMap<Integer,Disposable> concurrentHashMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Integer,Disposable> concurrentHashMap = new ConcurrentHashMap<>(); //
+
+    private ConcurrentHashMap<Integer, TransportMessage> qos2Message = new ConcurrentHashMap<>();
+
 
     public <T> Flux<T> receive(Class<T> tClass){
         return  inbound.receive().cast(tClass);
@@ -72,13 +76,33 @@ public class TransportConnection implements Disposable {
     }
 
 
+
+    public  void  saveQos2Message(Integer messageId,TransportMessage message){
+        qos2Message.put(messageId,message);
+    }
+
+
+    public  TransportMessage  getAndRemoveQos2Message(Integer messageId){
+        TransportMessage message  = qos2Message.get(messageId);
+        qos2Message.remove(messageId);
+        return message;
+    }
+
+    public  boolean  containQos2Message(Integer messageId,byte[] bytes){
+       return qos2Message.containsKey(messageId);
+    }
+
+
+
     public  void  addDisposable(Integer messageId,Disposable disposable){
         concurrentHashMap.put(messageId,disposable);
     }
 
+
     public  void  cancleDisposable(Integer messageId){
         Optional.ofNullable(concurrentHashMap.get(messageId))
                 .ifPresent(dispose->dispose.dispose());
+        concurrentHashMap.remove(messageId);
     }
 
     @Override

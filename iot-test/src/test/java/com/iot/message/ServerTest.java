@@ -1,5 +1,6 @@
 package com.iot.message;
 
+import com.iot.api.server.connection.MemoryMessageHandler;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.transport.server.TransportServer;
 import org.junit.Test;
@@ -17,7 +18,9 @@ public class ServerTest {
               .heart(100000)
               .protocol(ProtocolType.MQTT)
               .ssl(true)
+              .auth((username,password)->true)
               .log(true)
+              .messageHandler(new MemoryMessageHandler())
               .start()
               .subscribe();
         latch.await();
