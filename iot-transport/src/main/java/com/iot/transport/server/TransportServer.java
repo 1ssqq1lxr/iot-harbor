@@ -9,6 +9,7 @@ import com.iot.transport.server.connection.RsocketServerConnection;
 import reactor.core.publisher.Mono;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class TransportServer  {
     private static RsocketServerConfig config;
@@ -61,6 +62,11 @@ public class TransportServer  {
 
         public TransportServer.TransportBuilder messageHandler(RsocketMessageHandler messageHandler ){
             config.setMessageHandler(messageHandler);
+            return this;
+        }
+
+        public TransportServer.TransportBuilder exception(Consumer<Throwable> exceptionConsumer ){
+            config.setExceptionConsumer(exceptionConsumer);
             return this;
         }
 

@@ -4,13 +4,15 @@ import com.iot.api.RsocketChannelManager;
 import com.iot.api.RsocketConfiguration;
 import com.iot.api.RsocketMessageHandler;
 import com.iot.api.RsocketTopicManager;
-import com.iot.api.server.connection.MemoryChannelManager;
-import com.iot.api.server.connection.MemoryMessageHandler;
-import com.iot.api.server.connection.MemoryTopicManager;
+import com.iot.api.server.handler.MemoryChannelManager;
+import com.iot.api.server.handler.MemoryMessageHandler;
+import com.iot.api.server.handler.MemoryTopicManager;
+import io.netty.util.Constant;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 @Getter
 @Setter
@@ -29,6 +31,8 @@ public class RsocketServerConfig implements RsocketConfiguration {
     private boolean ssl;
 
     private BiFunction<String,String,Boolean> auth;
+
+    private Consumer<Throwable> throwableConsumer;
 
 
     private RsocketMessageHandler messageHandler = new MemoryMessageHandler();

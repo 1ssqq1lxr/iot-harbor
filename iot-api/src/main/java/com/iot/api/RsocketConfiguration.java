@@ -1,7 +1,7 @@
 package com.iot.api;
 
 
-
+import java.util.function.Consumer;
 
 public interface RsocketConfiguration {
 
@@ -20,6 +20,8 @@ public interface RsocketConfiguration {
     boolean isLog();
 
     int  getHeart();
+
+    Consumer<Throwable> getThrowableConsumer();
 
 
 

@@ -1,6 +1,6 @@
 package com.iot.message.container;
 
-import com.iot.api.server.connection.MemoryMessageHandler;
+import com.iot.api.server.handler.MemoryMessageHandler;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.transport.server.TransportServer;
 import org.junit.Test;

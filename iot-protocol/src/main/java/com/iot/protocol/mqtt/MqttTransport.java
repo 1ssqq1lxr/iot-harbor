@@ -33,7 +33,7 @@ public class MqttTransport extends ProtocolTransport {
                     connections.onNext(new TransportConnection(connection));
                 })
                 .bind()
-                .doOnError(error->log.error("************************************************************* server error {}",error.getMessage()));
+                .doOnError(config.getThrowableConsumer());
     }
 
 
