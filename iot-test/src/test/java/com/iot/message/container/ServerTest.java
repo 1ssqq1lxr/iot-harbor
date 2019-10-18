@@ -21,6 +21,7 @@ public class ServerTest {
               .auth((username,password)->true)
               .log(true)
               .messageHandler(new MemoryMessageHandler())
+              .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
               .start()
               .subscribe();
         latch.await();

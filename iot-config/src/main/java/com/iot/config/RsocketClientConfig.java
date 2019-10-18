@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.function.Consumer;
+
 
 @Getter
 @Setter
@@ -24,6 +26,11 @@ public class RsocketClientConfig implements RsocketConfiguration {
     private boolean ssl;
 
     private Options options;
+
+    @Override
+    public Consumer<Throwable> getThrowableConsumer() {
+        return null;
+    }
 
 
     @Getter

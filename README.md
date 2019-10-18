@@ -17,6 +17,7 @@
               .ssl(true) // 开启ssl
               .auth((username,password)->true) // 认证用户密码
               .log(true) // 开启报文日志
+              .exception(throwable -> {}) // 异常处理
               .messageHandler(new MemoryMessageHandler()) // 处理保留消息 默认走内存,可以自定义外部实现
               .start()
               .subscribe();

@@ -66,7 +66,7 @@ public class TransportServer  {
         }
 
         public TransportServer.TransportBuilder exception(Consumer<Throwable> exceptionConsumer ){
-            config.setExceptionConsumer(exceptionConsumer);
+            config.setThrowableConsumer(exceptionConsumer);
             return this;
         }
 
