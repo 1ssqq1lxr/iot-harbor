@@ -27,10 +27,8 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
     private Options options;
 
-    @Override
-    public Consumer<Throwable> getThrowableConsumer() {
-        return null;
-    }
+
+    private Consumer<Throwable> throwableConsumer;
 
 
     @Getter

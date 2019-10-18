@@ -1,7 +1,7 @@
 package com.iot.transport.client;
 
 
-import com.iot.api.client.RsocketClientAbsOperation;
+import com.iot.api.client.RsocketClientSession;
 import com.iot.config.RsocketClientConfig;
 import com.iot.common.annocation.ProtocolType;
 import io.netty.handler.codec.mqtt.MqttQoS;
@@ -85,10 +85,10 @@ public class TransportClient {
             return this;
         }
 
-//
-//        public Mono<RsocketClientAbsOperation> connect(){
-//            return transportFactory.connect(config);
-//        }
+
+        public Mono<RsocketClientSession> connect(){
+            return transportFactory.connect(config);
+        }
 
     }
 

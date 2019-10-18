@@ -18,6 +18,6 @@ public abstract class ProtocolTransport {
 
     public abstract Mono<? extends DisposableServer> start(RsocketConfiguration config, UnicastProcessor<TransportConnection> connections);
 
-    public abstract Mono<Connection> connect(RsocketConfiguration config);
+    public abstract Mono<TransportConnection>  connect(RsocketConfiguration config);
 
 }

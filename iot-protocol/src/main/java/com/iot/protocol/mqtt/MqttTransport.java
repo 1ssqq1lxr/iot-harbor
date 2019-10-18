@@ -6,15 +6,18 @@ import com.iot.protocol.ProtocolTransport;
 
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.UnicastProcessor;
 import reactor.netty.Connection;
 import reactor.netty.DisposableServer;
+import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
 
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Slf4j
@@ -59,10 +62,29 @@ public class MqttTransport extends ProtocolTransport {
     }
 
     @Override
-    public Mono<Connection> connect(RsocketConfiguration config) {
-        return null;
+    public Mono<TransportConnection> connect(RsocketConfiguration config) {
+        return  Mono.just(buildClient(config)
+                .connectNow())
+                .map(connection -> {
+                    protocol.getHandlers().forEach(connection::addHandler);
+                    return new TransportConnection(connection);
+                }).doOnError(config.getThrowableConsumer());
     }
 
+    private TcpClient buildClient(RsocketConfiguration config){
+        TcpClient client= TcpClient.create()
+                .port(config.getPort())
+                .host(config.getIp())
+                .wiretap(config.isLog());
+        try {
+            SslContext sslClient = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+            return  config.isSsl()?client.secure(sslContextSpec -> sslContextSpec.sslContext(sslClient)):client;
+        }
+        catch (Exception e){
+            log.error("*******************************************************************ssl error: {}",e.getMessage());
+            return  client;
+        }
+    }
 
 
 
