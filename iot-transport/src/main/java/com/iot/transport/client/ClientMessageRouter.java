@@ -1,22 +1,22 @@
-package com.iot.transport.server.handler;
+package com.iot.transport.client;
 
 import com.iot.common.connection.TransportConnection;
+import com.iot.config.RsocketClientConfig;
 import com.iot.config.RsocketServerConfig;
+import com.iot.transport.server.handler.DirectHandler;
+import com.iot.transport.server.handler.DirectHandlerAdaptor;
+import com.iot.transport.server.handler.DirectHandlerFactory;
 import io.netty.handler.codec.mqtt.MqttMessage;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
-@Getter
-@Slf4j
-public class MessageRouter  {
+public class ClientMessageRouter {
 
 
-    private final RsocketServerConfig config;
+    private final RsocketClientConfig config;
 
-    private final  DirectHandlerAdaptor directHandlerAdaptor;
+    private final DirectHandlerAdaptor directHandlerAdaptor;
 
-    public MessageRouter(RsocketServerConfig config) {
+    public ClientMessageRouter(RsocketClientConfig config) {
         this.config=config;
         this.directHandlerAdaptor= DirectHandlerFactory::new;
     }

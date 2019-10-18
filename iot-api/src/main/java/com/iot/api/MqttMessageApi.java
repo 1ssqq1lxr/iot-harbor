@@ -65,6 +65,20 @@ public class MqttMessageApi {
         return new MqttConnAckMessage(mqttFixedHeader, mqttConnAckVariableHeader);
     }
 
+    public static  MqttSubscribeMessage buildSub(int messageId,List<MqttTopicSubscription> topicSubscriptions){
+        MqttSubscribePayload mqttSubscribePayload = new MqttSubscribePayload(topicSubscriptions);
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.SUBSCRIBE,false, MqttQoS.AT_LEAST_ONCE,false,0);
+        MqttMessageIdVariableHeader mqttMessageIdVariableHeader =MqttMessageIdVariableHeader.from(messageId);
+        return new MqttSubscribeMessage(mqttFixedHeader,mqttMessageIdVariableHeader,mqttSubscribePayload);
+    }
+
+    public static  MqttUnsubscribeMessage buildUnSub(int messageId,List<String> topics){
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.UNSUBSCRIBE,false, MqttQoS.AT_LEAST_ONCE,false,0x02);
+        MqttMessageIdVariableHeader variableHeader = MqttMessageIdVariableHeader.from(messageId);
+        MqttUnsubscribePayload MqttUnsubscribeMessage = new MqttUnsubscribePayload(topics);
+        return new MqttUnsubscribeMessage(mqttFixedHeader,variableHeader,MqttUnsubscribeMessage);
+    }
+
 
 
 

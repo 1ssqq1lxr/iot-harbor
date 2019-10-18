@@ -7,6 +7,8 @@ import com.iot.common.annocation.ProtocolType;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import reactor.core.publisher.Mono;
 
+import java.util.function.BiConsumer;
+
 public class TransportClient {
 
     private RsocketClientConfig config;
@@ -42,9 +44,23 @@ public class TransportClient {
             config.setHeart(heart);
             return this;
         }
+        public TransportBuilder onClose(Runnable onClose){
+            config.setOnClose(onClose);
+            return this;
+        }
+
+        public TransportBuilder onConnected(Runnable onConnected){
+            config.setOnConnected(onConnected);
+            return this;
+        }
+
 
         public TransportBuilder ssl(boolean  ssl){
             config.setSsl(ssl);
+            return this;
+        }
+        public  TransportBuilder  messageAcceptor(BiConsumer<String,byte[]> messageAcceptor){
+            config.setMessageAcceptor(messageAcceptor);
             return this;
         }
 
@@ -79,6 +95,10 @@ public class TransportClient {
             options.setWillQos(qoS.value());
             return this;
         }
+
+
+
+
 
         public  TransportBuilder  log(boolean log){
             options.setLog(log);

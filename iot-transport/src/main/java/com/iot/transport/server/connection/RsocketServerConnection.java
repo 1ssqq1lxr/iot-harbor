@@ -7,7 +7,7 @@ import com.iot.api.server.handler.MemoryChannelManager;
 import com.iot.api.server.handler.MemoryTopicManager;
 import com.iot.common.connection.TransportConnection;
 import com.iot.config.RsocketServerConfig;
-import com.iot.transport.server.handler.MessageRouter;
+import com.iot.transport.server.handler.ServerMessageRouter;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -35,7 +35,7 @@ public class RsocketServerConnection implements RsocketServerSession {
     private RsocketServerConfig config;
 
 
-    private MessageRouter messageRouter;
+    private ServerMessageRouter messageRouter;
 
     public  RsocketServerConnection(UnicastProcessor<TransportConnection> connections, DisposableServer server, RsocketServerConfig config){
         this.disposableServer=server;
@@ -43,7 +43,7 @@ public class RsocketServerConnection implements RsocketServerSession {
         this.rsocketMessageHandler=config.getMessageHandler();
         this.topicManager = Optional.ofNullable(config.getTopicManager()).orElse(new MemoryTopicManager());
         this.channelManager= Optional.ofNullable(config.getChannelManager()).orElse(new MemoryChannelManager());
-        this.messageRouter= new MessageRouter(config);
+        this.messageRouter= new ServerMessageRouter(config);
         connections.subscribe(this::subscribe);
 
     }
@@ -51,7 +51,7 @@ public class RsocketServerConnection implements RsocketServerSession {
     private void  subscribe(TransportConnection connection){
         NettyInbound inbound=connection.getInbound();
         Connection c =connection.getConnection();
-        Disposable disposable = Mono.fromRunnable(()-> c.dispose())// 定时关闭
+        Disposable disposable = Mono.fromRunnable(c::dispose)// 定时关闭
                 .delaySubscription(Duration.ofSeconds(10))
                 .subscribe();
         c.channel().attr(AttributeKeys.connectionAttributeKey).set(connection); // 设置connection

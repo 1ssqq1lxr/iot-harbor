@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 
@@ -29,6 +30,13 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
 
     private Consumer<Throwable> throwableConsumer;
+
+    private BiConsumer<String,byte[]> messageAcceptor;
+
+    private Runnable onClose;
+
+    private Runnable onConnected;
+
 
 
     @Getter
