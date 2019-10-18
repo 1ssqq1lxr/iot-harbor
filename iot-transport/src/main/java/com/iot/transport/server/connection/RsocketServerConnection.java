@@ -2,13 +2,13 @@ package com.iot.transport.server.connection;
 
 
 import com.iot.api.*;
+import com.iot.api.server.RsocketServerSession;
 import com.iot.api.server.connection.MemoryChannelManager;
 import com.iot.api.server.connection.MemoryTopicManager;
 import com.iot.common.connection.TransportConnection;
 import com.iot.config.RsocketServerConfig;
 import com.iot.transport.server.handler.MessageRouter;
 import io.netty.handler.codec.mqtt.MqttMessage;
-import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.UnicastProcessor;
@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
-public class RsocketServerConnection extends RsocketServerAbsOperation {
+public class RsocketServerConnection implements RsocketServerSession {
 
 
     private DisposableServer disposableServer;
@@ -73,10 +73,6 @@ public class RsocketServerConnection extends RsocketServerAbsOperation {
     }
 
 
-    @Override
-    public Mono<Void> onClose(Disposable disposable) {
-        return null;
-    }
 
     @Override
     public void dispose() {

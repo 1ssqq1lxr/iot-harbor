@@ -53,7 +53,9 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
         private  boolean hasCleanSession;
 
-        private int KeepAliveTime;
+        private int heart;
+
+        private boolean log;
     }
 
 }
