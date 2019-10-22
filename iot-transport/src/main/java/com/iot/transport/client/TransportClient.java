@@ -4,23 +4,25 @@ package com.iot.transport.client;
 import com.iot.api.client.RsocketClientSession;
 import com.iot.config.RsocketClientConfig;
 import com.iot.common.annocation.ProtocolType;
+import com.iot.transport.server.TransportServer;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import reactor.core.publisher.Mono;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class TransportClient {
 
-    private RsocketClientConfig config;
+    private  static RsocketClientConfig config;
 
-    private TransportClientFactory transportFactory;
+    private static TransportClientFactory transportFactory;
 
-    private RsocketClientConfig.Options options;
+    private static RsocketClientConfig.Options options;
 
     private  TransportClient(){
 
     }
-    private class TransportBuilder{
+    public static class TransportBuilder{
 
         public TransportBuilder(){
             config = new RsocketClientConfig();
@@ -49,6 +51,11 @@ public class TransportClient {
             return this;
         }
 
+        public TransportBuilder exception(Consumer<Throwable> exceptionConsumer ){
+            config.setThrowableConsumer(exceptionConsumer);
+            return this;
+        }
+
         public TransportBuilder onConnected(Runnable onConnected){
             config.setOnConnected(onConnected);
             return this;
@@ -72,31 +79,34 @@ public class TransportClient {
 
         public  TransportBuilder  username(String username){
             options.setUserName(username);
+            options.setHasUserName(true);
             return this;
         }
 
 
         public  TransportBuilder  password(String password){
             options.setPassword(password);
+            options.setHasPassword(true);
             return this;
         }
 
         public  TransportBuilder  willTopic(String willTopic){
             options.setWillTopic(willTopic);
+            options.setHasWillFlag(true);
             return this;
         }
 
         public  TransportBuilder  willMessage(String willMessage){
             options.setWillMessage(willMessage);
+            options.setHasWillFlag(true);
             return this;
         }
 
         public  TransportBuilder  willQos(MqttQoS qoS){
             options.setWillQos(qoS.value());
+            options.setHasWillFlag(true);
             return this;
         }
-
-
 
 
 
@@ -112,7 +122,7 @@ public class TransportClient {
 
     }
 
-    public TransportBuilder create(String ip,int port){
+    public static TransportBuilder  create(String ip,int port){
         return  new TransportBuilder(ip,port);
     }
 
