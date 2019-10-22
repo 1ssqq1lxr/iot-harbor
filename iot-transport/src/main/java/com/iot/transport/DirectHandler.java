@@ -1,5 +1,6 @@
-package com.iot.transport.server.handler;
+package com.iot.transport;
 
+import com.iot.api.RsocketConfiguration;
 import com.iot.common.connection.TransportConnection;
 import com.iot.config.RsocketServerConfig;
 import io.netty.handler.codec.mqtt.MqttMessage;
@@ -7,6 +8,6 @@ import reactor.core.publisher.Mono;
 
 public interface DirectHandler {
 
-    Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketServerConfig config);
+    Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config);
 
 }

@@ -1,11 +1,12 @@
 package com.iot.transport.server.handler.pub;
 
 import com.iot.api.MqttMessageApi;
+import com.iot.api.RsocketConfiguration;
 import com.iot.api.RsocketTopicManager;
 import com.iot.common.connection.TransportConnection;
 import com.iot.common.message.TransportMessage;
 import com.iot.config.RsocketServerConfig;
-import com.iot.transport.server.handler.DirectHandler;
+import com.iot.transport.DirectHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
@@ -19,8 +20,9 @@ public class PubHandler implements DirectHandler {
 
 
     @Override
-    public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketServerConfig config) {
+    public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
         return Mono.fromRunnable(() -> {
+            RsocketServerConfig serverConfig = (RsocketServerConfig) config;
             MqttFixedHeader header = message.fixedHeader();
             switch (header.messageType()) {
                 case PUBLISH:
@@ -29,11 +31,11 @@ public class PubHandler implements DirectHandler {
                     ByteBuf byteBuf = mqttPublishMessage.payload();
                     byte[] bytes=copyByteBuf(byteBuf);
                     if (header.isRetain()) {//保留消息
-                        config.getMessageHandler().saveRetain(header.isDup(), header.isRetain(), header.qosLevel().value(), variableHeader.topicName(), bytes);
+                        serverConfig.getMessageHandler().saveRetain(header.isDup(), header.isRetain(), header.qosLevel().value(), variableHeader.topicName(), bytes);
                     }
                     switch (header.qosLevel()) {
                         case AT_MOST_ONCE:
-                            config.getTopicManager().getConnectionsByTopic(variableHeader.topicName())
+                            serverConfig.getTopicManager().getConnectionsByTopic(variableHeader.topicName())
                                     .stream().filter(c->connection.equals(c)|| c.isDispose() ) // 过滤掉本身 已经关闭的dispose
                                     .forEach(c ->
                                      c.write( MqttMessageApi.buildPub(false, header.qosLevel(), header.isRetain(), variableHeader.messageId(), variableHeader.topicName(), Unpooled.wrappedBuffer(bytes))).subscribe());
@@ -42,7 +44,7 @@ public class PubHandler implements DirectHandler {
                             MqttPubAckMessage mqttPubAckMessage = MqttMessageApi.buildPuback(header.isDup(), header.qosLevel(), header.isRetain(), variableHeader.packetId()); // back
                             connection.write(mqttPubAckMessage).subscribe();
                             if(!header.isDup()){ // 不是重发
-                                sendPub(config.getTopicManager(),variableHeader.topicName(),connection,header.qosLevel(),header.isRetain(),Unpooled.wrappedBuffer(bytes));
+                                sendPub(serverConfig.getTopicManager(),variableHeader.topicName(),connection,header.qosLevel(),header.isRetain(),Unpooled.wrappedBuffer(bytes));
                             }
                             break;
                         case EXACTLY_ONCE:
@@ -79,7 +81,7 @@ public class PubHandler implements DirectHandler {
                         MqttPubAckMessage  rel = (MqttPubAckMessage)message;
                         int messageId= rel.variableHeader().messageId();
                         TransportMessage transportMessage =connection.getAndRemoveQos2Message(messageId);
-                        sendPub(config.getTopicManager(),transportMessage.getTopic(),connection,MqttQoS.valueOf(transportMessage.getQos()),transportMessage.isRetain(),Unpooled.wrappedBuffer(transportMessage.getMessage()));
+                        sendPub(serverConfig.getTopicManager(),transportMessage.getTopic(),connection,MqttQoS.valueOf(transportMessage.getQos()),transportMessage.isRetain(),Unpooled.wrappedBuffer(transportMessage.getMessage()));
                     }
                     break;
                 case PUBCOMP:

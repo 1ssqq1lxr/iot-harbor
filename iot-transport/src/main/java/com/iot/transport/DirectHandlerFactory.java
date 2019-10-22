@@ -1,4 +1,4 @@
-package com.iot.transport.server.handler;
+package com.iot.transport;
 
 import com.iot.common.exception.NotSuppportHandlerException;
 import com.iot.transport.server.handler.connect.ConnectHandler;

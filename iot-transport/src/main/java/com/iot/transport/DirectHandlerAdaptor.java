@@ -1,4 +1,4 @@
-package com.iot.transport.server.handler;
+package com.iot.transport;
 
 
 import io.netty.handler.codec.mqtt.MqttMessageType;

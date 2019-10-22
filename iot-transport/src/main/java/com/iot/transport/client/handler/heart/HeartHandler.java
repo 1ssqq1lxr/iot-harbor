@@ -1,4 +1,4 @@
-package com.iot.transport.server.handler.heart;
+package com.iot.transport.client.handler.heart;
 
 import com.iot.api.RsocketConfiguration;
 import com.iot.common.connection.TransportConnection;
@@ -16,8 +16,6 @@ public class HeartHandler implements DirectHandler {
     public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
         return Mono.fromRunnable(()->{
             switch (message.fixedHeader().messageType()){
-                case PINGREQ:
-                     connection.sendPingRes().subscribe();
                 case PINGRESP:
                     log.info("accept pong{}",message.variableHeader());
             }
