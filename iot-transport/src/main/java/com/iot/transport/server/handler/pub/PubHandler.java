@@ -29,35 +29,36 @@ public class PubHandler implements DirectHandler {
                     MqttPublishMessage mqttPublishMessage = (MqttPublishMessage) message;
                     MqttPublishVariableHeader variableHeader = mqttPublishMessage.variableHeader();
                     ByteBuf byteBuf = mqttPublishMessage.payload();
-                    byte[] bytes=copyByteBuf(byteBuf);
+                    byte[] bytes = copyByteBuf(byteBuf);
                     if (header.isRetain()) {//保留消息
                         serverConfig.getMessageHandler().saveRetain(header.isDup(), header.isRetain(), header.qosLevel().value(), variableHeader.topicName(), bytes);
                     }
                     switch (header.qosLevel()) {
                         case AT_MOST_ONCE:
                             serverConfig.getTopicManager().getConnectionsByTopic(variableHeader.topicName())
-                                    .stream().filter(c->connection.equals(c)|| c.isDispose() ) // 过滤掉本身 已经关闭的dispose
+                                    .stream().filter(c -> connection.equals(c) || c.isDispose()) // 过滤掉本身 已经关闭的dispose
                                     .forEach(c ->
-                                     c.write( MqttMessageApi.buildPub(false, header.qosLevel(), header.isRetain(), variableHeader.messageId(), variableHeader.topicName(), Unpooled.wrappedBuffer(bytes))).subscribe());
+                                            c.write(MqttMessageApi.buildPub(false, header.qosLevel(), header.isRetain(), variableHeader.messageId(), variableHeader.topicName(), Unpooled.wrappedBuffer(bytes))).subscribe());
                             break;
                         case AT_LEAST_ONCE:
                             MqttPubAckMessage mqttPubAckMessage = MqttMessageApi.buildPuback(header.isDup(), header.qosLevel(), header.isRetain(), variableHeader.packetId()); // back
                             connection.write(mqttPubAckMessage).subscribe();
-                            if(!header.isDup()){ // 不是重发
-                                sendPub(serverConfig.getTopicManager(),variableHeader.topicName(),connection,header.qosLevel(),header.isRetain(),Unpooled.wrappedBuffer(bytes));
-                            }
+                            sendPub(serverConfig.getTopicManager(), variableHeader.topicName(), connection, header.qosLevel(), header.isRetain(), Unpooled.wrappedBuffer(bytes));
                             break;
                         case EXACTLY_ONCE:
-                            int messageId=variableHeader.packetId();
+                            int messageId = variableHeader.packetId();
                             MqttPubAckMessage mqttPubRecMessage = MqttMessageApi.buildPubRec(messageId);
                             connection.write(mqttPubRecMessage).subscribe();  //  send rec
-                            TransportMessage transportMessage=TransportMessage.builder().isRetain(header.isRetain())
+                            connection.addDisposable(messageId, Mono.fromRunnable(() ->
+                                    connection.write(MqttMessageApi.buildPubRel(messageId)).subscribe())
+                                    .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
+                            TransportMessage transportMessage = TransportMessage.builder().isRetain(header.isRetain())
                                     .isDup(false)
                                     .topic(variableHeader.topicName())
                                     .message(bytes)
                                     .qos(header.qosLevel().value())
                                     .build();
-                            connection.saveQos2Message(messageId,transportMessage);
+                            connection.saveQos2Message(messageId, transportMessage);
                             break;
                         case FAILURE:
                             log.error(" publish FAILURE {} {} ", header, variableHeader);
@@ -70,19 +71,21 @@ public class PubHandler implements DirectHandler {
                     break;
                 case PUBREC:
                     MqttMessageIdVariableHeader recVH = (MqttMessageIdVariableHeader) message.variableHeader();
-                    int id=recVH.messageId();
-                    connection.write( MqttMessageApi.buildPubRel(id)).subscribe();  //  send rel
+                    int id = recVH.messageId();
+                    connection.cancleDisposable(id);
+                    connection.write(MqttMessageApi.buildPubRel(id)).subscribe();  //  send rel
+                    connection.addDisposable(id, Mono.fromRunnable(() ->
+                            connection.write(MqttMessageApi.buildPubRel(id)).subscribe())
+                            .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
                     break;
                 case PUBREL:
-                    MqttMessageIdVariableHeader RelVH = (MqttMessageIdVariableHeader) message.variableHeader();
-                    MqttPubAckMessage mqttPubRecMessage = MqttMessageApi.buildPubComp(RelVH.messageId());
-                    connection.write(mqttPubRecMessage).subscribe();  //  send rec
-                    if(!header.isDup()) { // 不是重发
-                        MqttPubAckMessage  rel = (MqttPubAckMessage)message;
-                        int messageId= rel.variableHeader().messageId();
-                        TransportMessage transportMessage =connection.getAndRemoveQos2Message(messageId);
-                        sendPub(serverConfig.getTopicManager(),transportMessage.getTopic(),connection,MqttQoS.valueOf(transportMessage.getQos()),transportMessage.isRetain(),Unpooled.wrappedBuffer(transportMessage.getMessage()));
-                    }
+                    MqttPubAckMessage rel = (MqttPubAckMessage) message;
+                    int messageId = rel.variableHeader().messageId();
+                    connection.cancleDisposable(messageId); // cacel replay rec
+                    MqttPubAckMessage mqttPubRecMessage = MqttMessageApi.buildPubComp(messageId);
+                    connection.write(mqttPubRecMessage).subscribe();  //  send comp
+                    connection.getAndRemoveQos2Message(messageId)
+                            .ifPresent(msg -> sendPub(serverConfig.getTopicManager(), msg.getTopic(), connection, MqttQoS.valueOf(msg.getQos()), msg.isRetain(), Unpooled.wrappedBuffer(msg.getMessage())));
                     break;
                 case PUBCOMP:
                     MqttMessageIdVariableHeader compVH = (MqttMessageIdVariableHeader) message.variableHeader();
@@ -92,15 +95,15 @@ public class PubHandler implements DirectHandler {
         });
     }
 
-    private void sendPub(RsocketTopicManager topicManager, String topic, TransportConnection connection,MqttQoS qos,boolean retain,ByteBuf byteBuf){
+    private void sendPub(RsocketTopicManager topicManager, String topic, TransportConnection connection, MqttQoS qos, boolean retain, ByteBuf byteBuf) {
         topicManager.getConnectionsByTopic(topic)
-                .stream().filter(c->connection.equals(c)|| c.isDispose() )
+                .stream().filter(c -> connection.equals(c) || c.isDispose())
                 .forEach(c -> {
                     int id = c.messageId();
                     c.addDisposable(id, Mono.fromRunnable(() ->
-                            connection.write( MqttMessageApi.buildPub(true, qos, retain, id, topic, byteBuf)).subscribe())
+                            connection.write(MqttMessageApi.buildPub(true, qos, retain, id, topic, byteBuf)).subscribe())
                             .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
-                    MqttPublishMessage publishMessage = MqttMessageApi.buildPub(false, qos,retain, id, topic, byteBuf); // pub
+                    MqttPublishMessage publishMessage = MqttMessageApi.buildPub(false, qos, retain, id, topic, byteBuf); // pub
                     c.write(publishMessage).subscribe();
                 });
     }

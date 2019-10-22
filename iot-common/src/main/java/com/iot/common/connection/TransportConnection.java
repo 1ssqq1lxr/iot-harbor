@@ -82,10 +82,10 @@ public class TransportConnection implements Disposable {
     }
 
 
-    public  TransportMessage  getAndRemoveQos2Message(Integer messageId){
+    public Optional<TransportMessage>  getAndRemoveQos2Message(Integer messageId){
         TransportMessage message  = qos2Message.get(messageId);
         qos2Message.remove(messageId);
-        return message;
+        return Optional.ofNullable(message);
     }
 
     public  boolean  containQos2Message(Integer messageId,byte[] bytes){
@@ -104,6 +104,8 @@ public class TransportConnection implements Disposable {
                 .ifPresent(dispose->dispose.dispose());
         concurrentHashMap.remove(messageId);
     }
+
+
 
     @Override
     public void dispose() {
