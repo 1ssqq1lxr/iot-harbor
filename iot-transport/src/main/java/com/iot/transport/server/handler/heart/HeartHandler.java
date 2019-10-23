@@ -19,7 +19,7 @@ public class HeartHandler implements DirectHandler {
                 case PINGREQ:
                      connection.sendPingRes().subscribe();
                 case PINGRESP:
-                    log.info("accept pong{}",message.variableHeader());
+                    log.info("accept pong{}",message);
             }
         });
 

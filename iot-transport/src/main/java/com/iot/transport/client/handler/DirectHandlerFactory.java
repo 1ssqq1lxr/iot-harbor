@@ -1,10 +1,11 @@
-package com.iot.transport;
+package com.iot.transport.client.handler;
 
 import com.iot.common.exception.NotSuppportHandlerException;
-import com.iot.transport.server.handler.connect.ConnectHandler;
-import com.iot.transport.server.handler.heart.HeartHandler;
-import com.iot.transport.server.handler.pub.PubHandler;
-import com.iot.transport.server.handler.sub.SubHandler;
+import com.iot.transport.DirectHandler;
+import com.iot.transport.client.handler.connect.ConnectHandler;
+import com.iot.transport.client.handler.heart.HeartHandler;
+import com.iot.transport.client.handler.pub.PubHandler;
+import com.iot.transport.client.handler.sub.SubHandler;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,7 +14,7 @@ public class DirectHandlerFactory {
 
     private final  MqttMessageType messageType;
 
-    private  ConcurrentHashMap<MqttMessageType,DirectHandler> messageTypeCollection = new ConcurrentHashMap();
+    private  ConcurrentHashMap<MqttMessageType, DirectHandler> messageTypeCollection = new ConcurrentHashMap();
 
     public DirectHandlerFactory(MqttMessageType messageType) {
         this.messageType = messageType;
@@ -30,17 +31,12 @@ public class DirectHandlerFactory {
                     return new PubHandler();
 
                 case CONNACK:
-                case CONNECT:
-                case DISCONNECT:
                     return new ConnectHandler();
 
-                case PINGREQ:
                 case PINGRESP:
                     return new HeartHandler();
 
                 case UNSUBACK:
-                case SUBSCRIBE:
-                case UNSUBSCRIBE:
                 case SUBACK:
                     return new SubHandler();
             }

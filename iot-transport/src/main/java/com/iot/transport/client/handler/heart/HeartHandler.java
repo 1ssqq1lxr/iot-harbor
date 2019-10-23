@@ -17,7 +17,7 @@ public class HeartHandler implements DirectHandler {
         return Mono.fromRunnable(()->{
             switch (message.fixedHeader().messageType()){
                 case PINGRESP:
-                    log.info("accept pong{}",message.variableHeader());
+                break;
             }
         });
 

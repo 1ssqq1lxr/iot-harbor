@@ -9,6 +9,7 @@ import com.iot.config.RsocketClientConfig;
 import com.iot.transport.client.handler.ClientMessageRouter;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 import reactor.netty.NettyInbound;
@@ -35,9 +36,7 @@ public class RsocketClientConnection implements RsocketClientSession {
         this.clientMessageRouter = new ClientMessageRouter(clientConfig);
         RsocketClientConfig.Options options = clientConfig.getOptions();
         NettyInbound inbound = connection.getInbound();
-        Connection c = connection.getConnection();
-        connection.getConnection().channel().attr(AttributeKeys.closeConnection).get().dispose();//取消重发
-        Mono.fromRunnable(() -> connection.write(MqttMessageApi.buildConnect(
+        MqttConnectMessage connectMessage=MqttMessageApi.buildConnect(
                 options.getClientIdentifier(),
                 options.getWillTopic(),
                 options.getWillMessage(),
@@ -47,11 +46,14 @@ public class RsocketClientConnection implements RsocketClientSession {
                 options.isHasPassword(),
                 options.isHasWillFlag(),
                 options.getWillQos()
-        )).subscribe()).delaySubscription(Duration.ofSeconds(2)).repeat().subscribe();
+        );
+        Disposable disposable=Mono.fromRunnable(() -> connection.write(connectMessage).subscribe()).delaySubscription(Duration.ofSeconds(2)).repeat().subscribe();
+        connection.getConnection().channel().attr(AttributeKeys.closeConnection).set(disposable);
         connection.getConnection().onWriteIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
         connection.getConnection().onReadIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
         inbound.receiveObject().cast(MqttMessage.class)
-                .subscribe(message -> clientMessageRouter.handler(message, connection).subscribe());
+                .doOnNext(message ->  clientMessageRouter.handler(message, connection).subscribe())
+                .subscribe();
 
 
     }

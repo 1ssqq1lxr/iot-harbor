@@ -23,6 +23,8 @@ public interface RsocketConfiguration {
 
     Consumer<Throwable> getThrowableConsumer();
 
+    void checkConfig();
+
 
 
 }

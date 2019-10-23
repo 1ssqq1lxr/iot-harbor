@@ -37,6 +37,9 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
     private Runnable onConnected;
 
+    public void checkConfig() {
+
+    }
 
 
     @Getter
@@ -68,7 +71,6 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
         private int heart;
 
-        private boolean log;
     }
 
 }

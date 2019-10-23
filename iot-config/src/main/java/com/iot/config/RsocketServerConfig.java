@@ -42,5 +42,8 @@ public class RsocketServerConfig implements RsocketConfiguration {
     private RsocketTopicManager topicManager = new MemoryTopicManager();
 
 
+    @Override
+    public void checkConfig() {
 
+    }
 }

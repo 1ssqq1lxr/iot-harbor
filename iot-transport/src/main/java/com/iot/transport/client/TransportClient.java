@@ -28,10 +28,10 @@ public class TransportClient {
             config = new RsocketClientConfig();
             transportFactory = new TransportClientFactory();
             options = config.new Options();
-            config.setOptions(options);
         }
 
         public TransportBuilder(String ip,int port){
+            this();
             config = new RsocketClientConfig();
             config.setIp(ip);
             config.setPort(port);
@@ -111,12 +111,14 @@ public class TransportClient {
 
 
         public  TransportBuilder  log(boolean log){
-            options.setLog(log);
+            config.setLog(log);
             return this;
         }
 
 
         public Mono<RsocketClientSession> connect(){
+            config.setOptions(options);
+            config.checkConfig();
             return transportFactory.connect(config);
         }
 

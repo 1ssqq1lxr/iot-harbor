@@ -1,17 +1,11 @@
 package com.iot.transport.client.handler.connect;
 
 import com.iot.api.AttributeKeys;
-import com.iot.api.MqttMessageApi;
-import com.iot.api.RsocketChannelManager;
 import com.iot.api.RsocketConfiguration;
 import com.iot.common.connection.TransportConnection;
-import com.iot.config.RsocketClientConfig;
-import com.iot.config.RsocketServerConfig;
 import com.iot.transport.DirectHandler;
 import io.netty.handler.codec.mqtt.*;
-import io.netty.util.Attribute;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
