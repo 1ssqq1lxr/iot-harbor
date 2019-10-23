@@ -13,13 +13,11 @@ public class HeartHandler implements DirectHandler {
 
 
     @Override
-    public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
-        return Mono.fromRunnable(()->{
+    public void handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
             switch (message.fixedHeader().messageType()){
                 case PINGRESP:
                 break;
             }
-        });
 
     }
 }

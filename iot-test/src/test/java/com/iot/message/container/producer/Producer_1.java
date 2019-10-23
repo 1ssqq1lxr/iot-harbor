@@ -1,4 +1,4 @@
-package com.iot.message.container.consumer;
+package com.iot.message.container.producer;
 
 import com.iot.api.client.RsocketClientSession;
 import com.iot.api.server.handler.MemoryMessageHandler;
@@ -19,7 +19,7 @@ public class Producer_1 {
               .heart(10000)
               .protocol(ProtocolType.MQTT)
               .ssl(false)
-              .log(true)
+              .log(false)
               .clientId("Producer_1")
                 .password("12")
             .username("123")

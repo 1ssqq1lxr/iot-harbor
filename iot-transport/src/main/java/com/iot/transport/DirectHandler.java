@@ -7,6 +7,6 @@ import reactor.core.publisher.Mono;
 
 public interface DirectHandler {
 
-    Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config);
+    void handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config);
 
 }

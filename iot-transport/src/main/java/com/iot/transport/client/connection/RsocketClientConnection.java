@@ -52,8 +52,7 @@ public class RsocketClientConnection implements RsocketClientSession {
         connection.getConnection().onWriteIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
         connection.getConnection().onReadIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
         inbound.receiveObject().cast(MqttMessage.class)
-                .doOnNext(message ->  clientMessageRouter.handler(message, connection).doOnError(clientConfig.getThrowableConsumer()).subscribe())
-                .subscribe();
+                .subscribe(message ->  clientMessageRouter.handler(message, connection));
 
 
     }

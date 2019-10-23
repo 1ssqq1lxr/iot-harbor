@@ -18,8 +18,7 @@ public class ConnectHandler implements DirectHandler {
 
 
     @Override
-    public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
-        return Mono.fromRunnable(()->{
+    public void handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
             RsocketServerConfig serverConfig = (RsocketServerConfig) config;
             switch (message.fixedHeader().messageType()){
                 case CONNECT:
@@ -40,7 +39,6 @@ public class ConnectHandler implements DirectHandler {
                     connection.dispose();
                     break;
             }
-        });
     }
 
     private  void  connectSuccess(TransportConnection connection, RsocketChannelManager channelManager){

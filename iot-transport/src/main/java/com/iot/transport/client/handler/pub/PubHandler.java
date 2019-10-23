@@ -20,8 +20,7 @@ public class PubHandler implements DirectHandler {
 
 
     @Override
-    public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
-        return Mono.fromRunnable(() -> {
+    public void handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
             RsocketClientConfig clientConfig = (RsocketClientConfig) config;
             MqttFixedHeader header = message.fixedHeader();
             switch (header.messageType()) {
@@ -86,7 +85,6 @@ public class PubHandler implements DirectHandler {
                     connection.cancleDisposable(compVH.messageId());
                     break;
             }
-        });
     }
 
     private byte[] copyByteBuf(ByteBuf byteBuf) {

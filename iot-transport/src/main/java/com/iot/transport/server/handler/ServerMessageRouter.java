@@ -22,14 +22,14 @@ public class ServerMessageRouter {
         this.directHandlerAdaptor= DirectHandlerFactory::new;
     }
 
-    public Mono<Void> handler(MqttMessage message, TransportConnection connection) {
+    public void handler(MqttMessage message, TransportConnection connection) {
         if(message.decoderResult().isSuccess()){
+            log.info("accept message  info{}",message);
             DirectHandler handler=directHandlerAdaptor.handler(message.fixedHeader().messageType()).loadHandler();
-            return handler.handler(message,connection,config);
+             handler.handler(message,connection,config);
         }
         else {
             log.error("accept message  error{}",message.decoderResult().toString());
-            return Mono.empty();
         }
     }
 

@@ -15,8 +15,7 @@ public class ConnectHandler implements DirectHandler {
 
 
     @Override
-    public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
-        return Mono.fromRunnable(()->{
+    public void handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
             MqttConnAckMessage mqttConnAckMessage = (MqttConnAckMessage) message;
             MqttConnAckVariableHeader variableHeader=mqttConnAckMessage.variableHeader();
             switch (message.fixedHeader().messageType()){
@@ -43,6 +42,5 @@ public class ConnectHandler implements DirectHandler {
                     }
                     break;
             }
-        });
     }
 }

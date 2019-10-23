@@ -58,7 +58,7 @@ public class RsocketServerConnection implements RsocketServerSession {
         c.channel().attr(AttributeKeys.closeConnection).set(disposable);   // 设置close
         connection.getConnection().onReadIdle(config.getHeart(),()->connection.getConnection().dispose()); // 心跳超时关闭
         inbound.receiveObject().cast(MqttMessage.class)
-                .subscribe(message -> messageRouter.handler(message,connection).doOnError(config.getThrowableConsumer()).subscribe());
+                .subscribe(message -> messageRouter.handler(message,connection));
     }
 
 

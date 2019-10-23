@@ -19,8 +19,7 @@ public class SubHandler implements DirectHandler {
 
 
     @Override
-    public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
-        return Mono.fromRunnable(() -> {
+    public void handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
             RsocketServerConfig serverConfig = (RsocketServerConfig) config;
             MqttFixedHeader header = message.fixedHeader();
             switch (header.messageType()) {
@@ -59,6 +58,5 @@ public class SubHandler implements DirectHandler {
                     mqttUnsubscribeMessage.payload().topics().stream().forEach(m -> serverConfig.getTopicManager().deleteTopicConnection(m, connection));
                     break;
             }
-        });
     }
 }

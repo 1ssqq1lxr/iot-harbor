@@ -20,8 +20,7 @@ public class PubHandler implements DirectHandler {
 
 
     @Override
-    public Mono<Void> handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
-        return Mono.fromRunnable(() -> {
+    public void handler(MqttMessage message, TransportConnection connection, RsocketConfiguration config) {
             RsocketServerConfig serverConfig = (RsocketServerConfig) config;
             MqttFixedHeader header = message.fixedHeader();
             switch (header.messageType()) {
@@ -36,9 +35,12 @@ public class PubHandler implements DirectHandler {
                     switch (header.qosLevel()) {
                         case AT_MOST_ONCE:
                             serverConfig.getTopicManager().getConnectionsByTopic(variableHeader.topicName())
-                                    .stream().filter(c -> connection.equals(c) || c.isDispose()) // 过滤掉本身 已经关闭的dispose
-                                    .forEach(c ->
-                                            c.write(MqttMessageApi.buildPub(false, header.qosLevel(), header.isRetain(), variableHeader.messageId(), variableHeader.topicName(), Unpooled.wrappedBuffer(bytes))).subscribe());
+                                    .stream()// 过滤掉本身 已经关闭的dispose
+                                    .forEach(c ->{
+                                               ByteBuf buf= Unpooled.wrappedBuffer(bytes);
+                                               c.write(MqttMessageApi.buildPub(false, header.qosLevel(), header.isRetain(), variableHeader.messageId(), variableHeader.topicName(),buf )).subscribe();
+                                            }
+                                          );
                             break;
                         case AT_LEAST_ONCE:
                             MqttPubAckMessage mqttPubAckMessage = MqttMessageApi.buildPuback(header.isDup(), header.qosLevel(), header.isRetain(), variableHeader.packetId()); // back
@@ -92,7 +94,6 @@ public class PubHandler implements DirectHandler {
                     connection.cancleDisposable(compVH.messageId());
                     break;
             }
-        });
     }
 
     private void sendPub(RsocketTopicManager topicManager, String topic, TransportConnection connection, MqttQoS qos, boolean retain, ByteBuf byteBuf) {

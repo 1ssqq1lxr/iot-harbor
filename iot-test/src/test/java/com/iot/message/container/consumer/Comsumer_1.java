@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.util.concurrent.CountDownLatch;
 
 
-public class Producer_3 {
+public class Comsumer_1 {
 
     @Test
     public void testClient() throws InterruptedException {
@@ -17,8 +17,8 @@ public class Producer_3 {
               .heart(10000)
               .protocol(ProtocolType.MQTT)
               .ssl(false)
-              .log(true)
-              .clientId("Producer_3")
+              .log(false)
+              .clientId("Comsumer_1")
                 .password("12")
             .username("123")
             .willMessage("123")
@@ -29,7 +29,10 @@ public class Producer_3 {
                })
               .connect()
               .block();
-        clientSession.pub("test","Producer_3".getBytes()).subscribe();
+        Thread.sleep(5000);
+        clientSession.sub("test").subscribe();
+        clientSession.sub("test3").subscribe();
+        clientSession.sub("test4").subscribe();
         latch.await();
 
 
