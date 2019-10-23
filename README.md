@@ -33,9 +33,28 @@
 ### 自定义协议说明
 
 
-#### 客户端使用说明(还在开发)
+#### 客户端使用说明
 ```java
-    
+        RsocketClientSession clientSession= TransportClient.create("127.0.0.1",1884)
+                  .heart(10000)
+                  .protocol(ProtocolType.MQTT)
+                  .ssl(false)
+                  .log(true)
+                  .clientId("Comsumer_3")
+                    .password("12")
+                .username("123")
+                .willMessage("123")
+                .willTopic("/lose")
+                  .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
+                  .messageAcceptor((topic,msg)->{
+                        System.out.println(topic+":"+new String(msg));
+                   })
+                  .connect()
+                  .block();
+            clientSession.sub("test").subscribe(); // 订阅
+             clientSession.pub("test","Producer_3".getBytes()).subscribe();
+
+            
 ```
 ### 目前实现功能
 
