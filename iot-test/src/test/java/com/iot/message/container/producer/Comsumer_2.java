@@ -1,16 +1,14 @@
-package com.iot.message.container;
+package com.iot.message.container.producer;
 
 import com.iot.api.client.RsocketClientSession;
-import com.iot.api.server.handler.MemoryMessageHandler;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.transport.client.TransportClient;
-import com.iot.transport.server.TransportServer;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 
 
-public class clientTest {
+public class Comsumer_2 {
 
     @Test
     public void testClient() throws InterruptedException {
@@ -20,7 +18,7 @@ public class clientTest {
               .protocol(ProtocolType.MQTT)
               .ssl(false)
               .log(true)
-              .clientId("123")
+              .clientId("Comsumer_2")
                 .password("12")
             .username("123")
             .willMessage("123")
@@ -31,6 +29,7 @@ public class clientTest {
                })
               .connect()
               .block();
+        clientSession.sub("test").subscribe();
         latch.await();
 
 

@@ -5,6 +5,7 @@ import com.iot.api.RsocketMessageHandler;
 import com.iot.common.connection.ReatinMessage;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MemoryMessageHandler implements RsocketMessageHandler {
@@ -18,7 +19,7 @@ public class MemoryMessageHandler implements RsocketMessageHandler {
     }
 
     @Override
-    public List<ReatinMessage> getRetain(String topicName) {
-        return messages.get(topicName);
+    public Optional<List<ReatinMessage>> getRetain(String topicName) {
+        return Optional.ofNullable(messages.get(topicName));
     }
 }
