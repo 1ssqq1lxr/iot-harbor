@@ -42,9 +42,9 @@
                   .log(true)
                   .clientId("Comsumer_3")
                     .password("12")
-                .username("123")
-                .willMessage("123")
-                .willTopic("/lose")
+                    .username("123")
+                    .willMessage("123")
+                    .willTopic("/lose")
                   .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
                   .messageAcceptor((topic,msg)->{
                         System.out.println(topic+":"+new String(msg));
