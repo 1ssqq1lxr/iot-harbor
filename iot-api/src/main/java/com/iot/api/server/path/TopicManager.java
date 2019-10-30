@@ -24,7 +24,7 @@ public class TopicManager {
                     .build(new CacheLoader<String,Optional<List<TransportConnection>>>(){
                         @Override
                         public Optional<List<TransportConnection>> load(String key) throws Exception {
-                            String[] methodArray = key.split("\\|");
+                            String[] methodArray = key.split("/");
                             return Optional.ofNullable(pathMap.getData(methodArray));
                         }
                     });
@@ -36,14 +36,14 @@ public class TopicManager {
 
 
     public void  addTopicConnection(String topic,TransportConnection connection){
-        String[] methodArray = topic.split("\\|");
+        String[] methodArray = topic.split("/");
         pathMap.putData(methodArray,connection);
         cache.invalidate(topic);
     }
 
 
     public void  deleteTopicConnection(String topic,TransportConnection connection){
-        String[] methodArray = topic.split("\\|");
+        String[] methodArray = topic.split("/");
         pathMap.delete(methodArray,connection);
         cache.invalidate(topic);
     }

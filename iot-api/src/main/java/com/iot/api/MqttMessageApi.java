@@ -82,7 +82,7 @@ public class MqttMessageApi {
     public static MqttConnectMessage buildConnect(String clientId,String willTopic,String willMessage,String username,String password,boolean isUsername,boolean isPassword,boolean isWill,int willQos){
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.CONNECT,false, MqttQoS.AT_LEAST_ONCE,false,10);
         MqttConnectVariableHeader mqttConnectVariableHeader = new MqttConnectVariableHeader(MqttVersion.MQTT_3_1_1.protocolName(),MqttVersion.MQTT_3_1_1.protocolLevel(),isUsername,isPassword,false,willQos,isWill,true,1000);
-        MqttConnectPayload mqttConnectPayload = new MqttConnectPayload(clientId,willTopic,willMessage,username,password);
+        MqttConnectPayload mqttConnectPayload = new MqttConnectPayload(clientId,willTopic,isWill?willMessage.getBytes():null,username,isPassword?password.getBytes():null);
         return new MqttConnectMessage(mqttFixedHeader,mqttConnectVariableHeader,mqttConnectPayload);
     }
 

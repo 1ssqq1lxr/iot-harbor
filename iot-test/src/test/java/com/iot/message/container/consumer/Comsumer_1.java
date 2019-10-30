@@ -3,6 +3,7 @@ package com.iot.message.container.consumer;
 import com.iot.api.client.RsocketClientSession;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.transport.client.TransportClient;
+import io.netty.handler.codec.mqtt.MqttQoS;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -21,8 +22,9 @@ public class Comsumer_1 {
               .clientId("Comsumer_1")
                 .password("12")
             .username("123")
-            .willMessage("123")
-            .willTopic("/lose")
+            .willMessage("Comsumer_1")
+            .willTopic("/lose/Comsumer_1")
+            .willQos(MqttQoS.AT_LEAST_ONCE)
               .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
               .messageAcceptor((topic,msg)->{
                     System.out.println(topic+":"+new String(msg));
