@@ -4,7 +4,7 @@ package com.iot.api.server.handler;
 import com.google.common.collect.Lists;
 import com.iot.api.RsocketTopicManager;
 import com.iot.api.server.path.TopicManager;
-import com.iot.common.connection.TransportConnection;
+import com.iot.api.TransportConnection;
 
 import java.util.List;
 

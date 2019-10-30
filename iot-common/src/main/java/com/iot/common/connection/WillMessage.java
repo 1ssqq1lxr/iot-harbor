@@ -9,4 +9,5 @@ public class WillMessage {
     private int qos;
     private String topicName;
     private byte[] copyByteBuf;
+    private boolean retain;
 }

@@ -2,7 +2,6 @@ package com.iot.api;
 
 import com.iot.api.client.RsocketClientSession;
 import com.iot.api.server.RsocketServerSession;
-import com.iot.common.connection.TransportConnection;
 import com.iot.common.connection.WillMessage;
 import io.netty.util.AttributeKey;
 import lombok.experimental.UtilityClass;

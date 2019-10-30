@@ -3,7 +3,7 @@ package com.iot.transport.server.handler.sub;
 import com.iot.api.MqttMessageApi;
 import com.iot.api.RsocketConfiguration;
 import com.iot.api.RsocketTopicManager;
-import com.iot.common.connection.TransportConnection;
+import com.iot.api.TransportConnection;
 import com.iot.config.RsocketServerConfig;
 import com.iot.transport.DirectHandler;
 import io.netty.buffer.Unpooled;
@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SubHandler implements DirectHandler {

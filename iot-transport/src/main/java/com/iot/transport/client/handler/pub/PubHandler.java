@@ -2,12 +2,11 @@ package com.iot.transport.client.handler.pub;
 
 import com.iot.api.MqttMessageApi;
 import com.iot.api.RsocketConfiguration;
-import com.iot.common.connection.TransportConnection;
+import com.iot.api.TransportConnection;
 import com.iot.common.message.TransportMessage;
 import com.iot.config.RsocketClientConfig;
 import com.iot.transport.DirectHandler;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;

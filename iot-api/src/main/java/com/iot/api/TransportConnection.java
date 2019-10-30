@@ -1,10 +1,9 @@
-package com.iot.common.connection;
+package com.iot.api;
 
 import com.iot.common.message.TransportMessage;
-import io.netty.handler.codec.mqtt.MqttFixedHeader;
-import io.netty.handler.codec.mqtt.MqttMessage;
-import io.netty.handler.codec.mqtt.MqttMessageType;
-import io.netty.handler.codec.mqtt.MqttQoS;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.mqtt.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,8 +14,11 @@ import reactor.netty.Connection;
 import reactor.netty.NettyInbound;
 import reactor.netty.NettyOutbound;
 
+import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.LongAdder;
 
 @Getter
@@ -36,6 +38,8 @@ public class TransportConnection implements Disposable {
 
     private ConcurrentHashMap<Integer, TransportMessage> qos2Message = new ConcurrentHashMap<>();
 
+    private List<String> topics   = new CopyOnWriteArrayList<>();
+
 
     public <T> Flux<T> receive(Class<T> tClass){
         return  inbound.receive().cast(tClass);
@@ -45,6 +49,14 @@ public class TransportConnection implements Disposable {
         this.connection=connection;
         this.inbound=connection.inbound();
         this.outbound=connection.outbound();
+    }
+
+    public void addTopic(String topic){
+        topics.add(topic);
+    }
+
+    public void removeTopic(String topic){
+        topics.remove(topic);
     }
 
 
@@ -115,6 +127,19 @@ public class TransportConnection implements Disposable {
     public boolean isDispose(){
         return connection.isDisposed();
     }
+
+    public  Mono<Void> sendMessage(boolean isDup, MqttQoS qoS, boolean isRetain, String topic, byte[] message){
+        return this.write(MqttMessageApi.buildPub(isDup,qoS,isRetain,1,topic, Unpooled.wrappedBuffer(message)));
+    }
+    public   Mono<Void> sendMessageRetry(boolean isDup, MqttQoS qoS, boolean isRetain, String topic, byte[] message){
+        int id = this.messageId();
+        this.addDisposable(id, Mono.fromRunnable(() ->
+                this.write(MqttMessageApi.buildPub(isDup,qoS,isRetain,id,topic, Unpooled.wrappedBuffer(message))).subscribe())
+                .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
+        MqttPublishMessage publishMessage = MqttMessageApi.buildPub(isDup,qoS,isRetain,id,topic, Unpooled.wrappedBuffer(message)); // pub
+       return this.write(publishMessage);
+    }
+
 
 
 

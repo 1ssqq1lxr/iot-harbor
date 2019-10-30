@@ -3,7 +3,7 @@ package com.iot.transport.server.handler.pub;
 import com.iot.api.MqttMessageApi;
 import com.iot.api.RsocketConfiguration;
 import com.iot.api.RsocketTopicManager;
-import com.iot.common.connection.TransportConnection;
+import com.iot.api.TransportConnection;
 import com.iot.common.message.TransportMessage;
 import com.iot.config.RsocketServerConfig;
 import com.iot.transport.DirectHandler;
@@ -36,16 +36,14 @@ public class PubHandler implements DirectHandler {
                         case AT_MOST_ONCE:
                             serverConfig.getTopicManager().getConnectionsByTopic(variableHeader.topicName())
                                     .stream()// 过滤掉本身 已经关闭的dispose
-                                    .forEach(c ->{
-                                               ByteBuf buf= Unpooled.wrappedBuffer(bytes);
-                                               c.write(MqttMessageApi.buildPub(false, header.qosLevel(), header.isRetain(), variableHeader.messageId(), variableHeader.topicName(),buf )).subscribe();
-                                            }
-                                          );
+                                    .forEach(c -> c.sendMessage(false, header.qosLevel(), header.isRetain(), variableHeader.topicName(),bytes).subscribe());
                             break;
                         case AT_LEAST_ONCE:
                             MqttPubAckMessage mqttPubAckMessage = MqttMessageApi.buildPuback(header.isDup(), header.qosLevel(), header.isRetain(), variableHeader.packetId()); // back
                             connection.write(mqttPubAckMessage).subscribe();
-                            sendPub(serverConfig.getTopicManager(), variableHeader.topicName(), connection, header.qosLevel(), header.isRetain(), Unpooled.wrappedBuffer(bytes));
+                            serverConfig.getTopicManager().getConnectionsByTopic(variableHeader.topicName())
+                                    .stream().filter(c -> connection.equals(c) || c.isDispose())
+                                    .forEach(c -> c.sendMessageRetry(false, header.qosLevel(), header.isRetain(), variableHeader.topicName(),bytes).subscribe());
                             break;
                         case EXACTLY_ONCE:
                             int messageId = variableHeader.packetId();
@@ -87,7 +85,9 @@ public class PubHandler implements DirectHandler {
                     MqttPubAckMessage mqttPubRecMessage = MqttMessageApi.buildPubComp(messageId);
                     connection.write(mqttPubRecMessage).subscribe();  //  send comp
                     connection.getAndRemoveQos2Message(messageId)
-                            .ifPresent(msg -> sendPub(serverConfig.getTopicManager(), msg.getTopic(), connection, MqttQoS.valueOf(msg.getQos()), msg.isRetain(), Unpooled.wrappedBuffer(msg.getMessage())));
+                            .ifPresent(msg -> serverConfig.getTopicManager().getConnectionsByTopic(msg.getTopic())
+                                    .stream().filter(c -> connection.equals(c) || c.isDispose())
+                                    .forEach(c -> c.sendMessageRetry(false, MqttQoS.valueOf(msg.getQos()), header.isRetain(), msg.getTopic(),msg.getMessage()).subscribe()));
                     break;
                 case PUBCOMP:
                     MqttMessageIdVariableHeader compVH = (MqttMessageIdVariableHeader) message.variableHeader();
@@ -96,18 +96,7 @@ public class PubHandler implements DirectHandler {
             }
     }
 
-    private void sendPub(RsocketTopicManager topicManager, String topic, TransportConnection connection, MqttQoS qos, boolean retain, ByteBuf byteBuf) {
-        topicManager.getConnectionsByTopic(topic)
-                .stream().filter(c -> connection.equals(c) || c.isDispose())
-                .forEach(c -> {
-                    int id = c.messageId();
-                    c.addDisposable(id, Mono.fromRunnable(() ->
-                            connection.write(MqttMessageApi.buildPub(true, qos, retain, id, topic, byteBuf)).subscribe())
-                            .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
-                    MqttPublishMessage publishMessage = MqttMessageApi.buildPub(false, qos, retain, id, topic, byteBuf); // pub
-                    c.write(publishMessage).subscribe();
-                });
-    }
+
 
     private byte[] copyByteBuf(ByteBuf byteBuf) {
         byte[] bytes = new byte[byteBuf.readableBytes()];

@@ -3,8 +3,7 @@ package com.iot.api.server.path;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.iot.common.connection.TransportConnection;
-import reactor.netty.Connection;
+import com.iot.api.TransportConnection;
 
 import java.util.List;
 import java.util.Optional;

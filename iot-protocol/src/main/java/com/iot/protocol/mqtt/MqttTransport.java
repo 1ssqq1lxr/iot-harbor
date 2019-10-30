@@ -1,7 +1,7 @@
 package com.iot.protocol.mqtt;
 
 import com.iot.api.RsocketConfiguration;
-import com.iot.common.connection.TransportConnection;
+import com.iot.api.TransportConnection;
 import com.iot.protocol.ProtocolTransport;
 
 import io.netty.handler.ssl.SslContext;
@@ -11,13 +11,11 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.UnicastProcessor;
-import reactor.netty.Connection;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
 
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Slf4j

@@ -4,7 +4,7 @@ import com.iot.api.AttributeKeys;
 import com.iot.api.MqttMessageApi;
 import com.iot.api.RsocketChannelManager;
 import com.iot.api.RsocketConfiguration;
-import com.iot.common.connection.TransportConnection;
+import com.iot.api.TransportConnection;
 import com.iot.common.connection.WillMessage;
 import com.iot.config.RsocketServerConfig;
 import com.iot.transport.DirectHandler;
@@ -31,12 +31,12 @@ public class ConnectHandler implements DirectHandler {
                             connectSuccess(connection,serverConfig.getChannelManager());
                         else connection.write( MqttMessageApi.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD)).subscribe();
                         if(connectVariableHeader.isWillFlag())
-                            saveWill(connection,mqttConnectPayload.willTopic(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
+                            saveWill(connection,mqttConnectPayload.willTopic(),connectVariableHeader.isWillRetain(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
                     }
                     else {
                         connectSuccess(connection,serverConfig.getChannelManager());
                         if(connectVariableHeader.isWillFlag())
-                            saveWill(connection,mqttConnectPayload.willTopic(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
+                            saveWill(connection,mqttConnectPayload.willTopic(),connectVariableHeader.isWillRetain(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
                     }
                     break;
                 case DISCONNECT:
@@ -46,8 +46,8 @@ public class ConnectHandler implements DirectHandler {
             }
     }
 
-    private void   saveWill(TransportConnection connection,String willTopic,byte[] willMessage,int qoS){
-        WillMessage ws =  new WillMessage(qoS,willTopic,willMessage);
+    private void   saveWill(TransportConnection connection,String willTopic,boolean willRetain ,byte[] willMessage,int qoS){
+        WillMessage ws =  new WillMessage(qoS,willTopic,willMessage,willRetain);
         connection.getConnection().channel().attr(AttributeKeys.WILL_MESSAGE).set(ws); // 设置device Id
     }
 

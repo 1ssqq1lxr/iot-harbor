@@ -1,6 +1,6 @@
 package com.iot.api.server;
 
-import com.iot.common.connection.TransportConnection;
+import com.iot.api.TransportConnection;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 

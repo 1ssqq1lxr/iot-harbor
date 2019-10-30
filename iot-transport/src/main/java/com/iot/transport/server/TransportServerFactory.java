@@ -3,7 +3,7 @@ package com.iot.transport.server;
 import com.iot.api.server.RsocketServerSession;
 import com.iot.transport.server.connection.RsocketServerConnection;
 import com.iot.common.annocation.ProtocolType;
-import com.iot.common.connection.TransportConnection;
+import com.iot.api.TransportConnection;
 import com.iot.config.RsocketServerConfig;
 import com.iot.protocol.ProtocolFactory;
 import reactor.core.publisher.Mono;

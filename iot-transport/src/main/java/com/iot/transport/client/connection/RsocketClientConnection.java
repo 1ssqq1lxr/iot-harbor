@@ -4,14 +4,13 @@ import com.google.common.collect.Lists;
 import com.iot.api.AttributeKeys;
 import com.iot.api.MqttMessageApi;
 import com.iot.api.client.RsocketClientSession;
-import com.iot.common.connection.TransportConnection;
+import com.iot.api.TransportConnection;
 import com.iot.config.RsocketClientConfig;
 import com.iot.transport.client.handler.ClientMessageRouter;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
-import reactor.netty.Connection;
 import reactor.netty.NettyInbound;
 
 import java.time.Duration;
