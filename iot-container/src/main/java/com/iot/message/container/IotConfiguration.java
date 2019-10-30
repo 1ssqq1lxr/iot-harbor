@@ -2,6 +2,7 @@ package com.iot.message.container;
 
 
 import com.iot.api.RsocketMessageHandler;
+import com.iot.api.server.RsocketServerSession;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.transport.server.TransportServer;
 import com.iot.transport.server.connection.RsocketServerConnection;
@@ -31,7 +32,7 @@ public class IotConfiguration implements ApplicationContextAware {
 
     @Bean
     @ConditionalOnProperty(prefix = "iot.mqtt.server",name = "enable", havingValue = "true")
-    public RsocketServerConnection initServer(@Autowired IotConfig iotConfig)  {
+    public RsocketServerSession initServer(@Autowired IotConfig iotConfig)  {
         BiFunction<String,String,Boolean> auth= (u,p)->true;
         AuthencationSession authencationSession =this.applicationContext.getBean(AuthencationSession.class);
         if(authencationSession != null){
