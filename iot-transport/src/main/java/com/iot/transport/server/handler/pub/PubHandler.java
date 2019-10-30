@@ -42,7 +42,7 @@ public class PubHandler implements DirectHandler {
                             MqttPubAckMessage mqttPubAckMessage = MqttMessageApi.buildPuback(header.isDup(), header.qosLevel(), header.isRetain(), variableHeader.packetId()); // back
                             connection.write(mqttPubAckMessage).subscribe();
                             serverConfig.getTopicManager().getConnectionsByTopic(variableHeader.topicName())
-                                    .stream().filter(c -> connection.equals(c) || c.isDispose())
+                                    .stream().filter(c->!connection.equals(c) && !c.isDispose())
                                     .forEach(c -> c.sendMessageRetry(false, header.qosLevel(), header.isRetain(), variableHeader.topicName(),bytes).subscribe());
                             break;
                         case EXACTLY_ONCE:
@@ -79,14 +79,14 @@ public class PubHandler implements DirectHandler {
                             .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
                     break;
                 case PUBREL:
-                    MqttPubAckMessage rel = (MqttPubAckMessage) message;
-                    int messageId = rel.variableHeader().messageId();
+                    MqttMessageIdVariableHeader rel = (MqttMessageIdVariableHeader) message.variableHeader();
+                    int messageId = rel.messageId();
                     connection.cancleDisposable(messageId); // cacel replay rec
                     MqttPubAckMessage mqttPubRecMessage = MqttMessageApi.buildPubComp(messageId);
                     connection.write(mqttPubRecMessage).subscribe();  //  send comp
                     connection.getAndRemoveQos2Message(messageId)
                             .ifPresent(msg -> serverConfig.getTopicManager().getConnectionsByTopic(msg.getTopic())
-                                    .stream().filter(c -> connection.equals(c) || c.isDispose())
+                                    .stream().filter(c->!connection.equals(c) && !c.isDispose())
                                     .forEach(c -> c.sendMessageRetry(false, MqttQoS.valueOf(msg.getQos()), header.isRetain(), msg.getTopic(),msg.getMessage()).subscribe()));
                     break;
                 case PUBCOMP:

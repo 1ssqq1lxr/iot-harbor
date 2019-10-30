@@ -71,8 +71,8 @@ public class PubHandler implements DirectHandler {
                             .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
                     break;
                 case PUBREL:
-                    MqttPubAckMessage rel = (MqttPubAckMessage) message;
-                    int messageId = rel.variableHeader().messageId();
+                    MqttMessageIdVariableHeader b = (MqttMessageIdVariableHeader) message.variableHeader();
+                    int messageId = b.messageId();
                     connection.cancleDisposable(messageId); // cacel replay rec
                     MqttPubAckMessage mqttPubRecMessage = MqttMessageApi.buildPubComp(messageId);
                     connection.write(mqttPubRecMessage).subscribe();  //  send comp
