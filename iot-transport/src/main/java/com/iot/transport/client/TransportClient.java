@@ -56,10 +56,6 @@ public class TransportClient {
             return this;
         }
 
-        public TransportBuilder onConnected(Runnable onConnected){
-            config.setOnConnected(onConnected);
-            return this;
-        }
 
 
         public TransportBuilder ssl(boolean  ssl){

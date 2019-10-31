@@ -66,7 +66,7 @@ public class MqttTransport extends ProtocolTransport {
                 .map(connection -> {
                     protocol.getHandlers().forEach(connection::addHandler);
                     return new TransportConnection(connection);
-                }).doOnError(config.getThrowableConsumer());
+                });
     }
 
     private TcpClient buildClient(RsocketConfiguration config){

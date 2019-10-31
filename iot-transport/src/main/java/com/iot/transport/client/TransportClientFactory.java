@@ -25,7 +25,7 @@ public class TransportClientFactory {
     public Mono<RsocketClientSession> connect(RsocketClientConfig config) {
         this.clientConfig=config;
         return  Mono.from(protocolFactory.getProtocol(ProtocolType.valueOf(config.getProtocol()))
-                .get().getTransport().connect(config)).map(this::wrapper);
+                .get().getTransport().connect(config)).map(this::wrapper).doOnError(config.getThrowableConsumer());
     }
 
 

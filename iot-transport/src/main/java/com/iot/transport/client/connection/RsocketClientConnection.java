@@ -50,6 +50,7 @@ public class RsocketClientConnection implements RsocketClientSession {
         connection.getConnection().channel().attr(AttributeKeys.closeConnection).set(disposable);
         connection.getConnection().onWriteIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
         connection.getConnection().onReadIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
+        connection.getConnection().onDispose(()->clientConfig.getOnClose().run());
         inbound.receiveObject().cast(MqttMessage.class)
                 .subscribe(message ->  clientMessageRouter.handler(message, connection));
 

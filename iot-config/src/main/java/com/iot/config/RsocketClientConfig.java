@@ -35,7 +35,6 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
     private Runnable onClose;
 
-    private Runnable onConnected;
 
     public void checkConfig() {
 
