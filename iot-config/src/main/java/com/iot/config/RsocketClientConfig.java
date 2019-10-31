@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -20,13 +21,13 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
     private String  protocol;
 
-    private int heart;
+    private int heart = 30;
 
     private boolean log;
 
     private boolean ssl;
 
-    private Options options;
+    private Options options = new Options();
 
 
     private Consumer<Throwable> throwableConsumer;
@@ -37,7 +38,15 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
 
     public void checkConfig() {
-
+        Objects.requireNonNull(ip,"ip is not null");
+        Objects.requireNonNull(port,"port is not null");
+        Objects.requireNonNull(protocol,"protocol is not null");
+        Objects.requireNonNull(options.getClientIdentifier(),"clientIdentifier is not null");
+        if(options.isHasWillFlag()){
+            Objects.requireNonNull(options.getWillMessage(),"willMessage is not null");
+            Objects.requireNonNull(options.getWillQos(),"willQos is not null");
+            Objects.requireNonNull(options.getWillTopic(),"willTopic is not null");
+        }
     }
 
 
@@ -68,7 +77,6 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
         private  boolean hasCleanSession;
 
-        private int heart;
 
     }
 

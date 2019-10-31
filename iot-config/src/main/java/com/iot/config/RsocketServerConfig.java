@@ -10,7 +10,9 @@ import com.iot.api.server.handler.MemoryTopicManager;
 import io.netty.util.Constant;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -24,15 +26,15 @@ public class RsocketServerConfig implements RsocketConfiguration {
 
     private String protocol;
 
-    private int heart;
+    private int heart = 60;
 
-    private boolean log;
+    private boolean log ;
 
-    private boolean ssl;
+    private boolean ssl ;
 
-    private BiFunction<String,String,Boolean> auth;
+    private BiFunction<String,String,Boolean> auth = (user,pass)->true;
 
-    private Consumer<Throwable> throwableConsumer;
+    private Consumer<Throwable> throwableConsumer = throwable -> {};
 
 
     private RsocketMessageHandler messageHandler = new MemoryMessageHandler();
@@ -44,6 +46,7 @@ public class RsocketServerConfig implements RsocketConfiguration {
 
     @Override
     public void checkConfig() {
-
+        Objects.requireNonNull(ip,"ip is not null");
+        Objects.requireNonNull(protocol,"protocol is not null");
     }
 }

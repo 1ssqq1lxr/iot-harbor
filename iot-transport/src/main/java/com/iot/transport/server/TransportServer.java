@@ -5,7 +5,6 @@ import com.iot.api.RsocketMessageHandler;
 import com.iot.api.server.RsocketServerSession;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.config.RsocketServerConfig;
-import com.iot.transport.server.connection.RsocketServerConnection;
 import reactor.core.publisher.Mono;
 
 import java.util.function.BiFunction;
@@ -71,6 +70,7 @@ public class TransportServer  {
         }
 
         public Mono<RsocketServerSession> start(){
+            config.checkConfig();
             return transportFactory.start(config);
         }
     }
