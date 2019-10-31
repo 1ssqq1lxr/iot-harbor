@@ -33,8 +33,7 @@ public class MqttTransport extends ProtocolTransport {
                     protocol.getHandlers().forEach(connection::addHandler);
                     connections.onNext(new TransportConnection(connection));
                 })
-                .bind()
-                .doOnError(config.getThrowableConsumer());
+                .bind();
     }
 
 

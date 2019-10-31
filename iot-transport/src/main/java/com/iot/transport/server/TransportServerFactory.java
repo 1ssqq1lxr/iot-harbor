@@ -27,7 +27,7 @@ public class TransportServerFactory {
     public Mono<RsocketServerSession> start(RsocketServerConfig config) {
         this.config =config;
         return  Mono.from(protocolFactory.getProtocol(ProtocolType.valueOf(config.getProtocol()))
-                .get().getTransport().start(config,unicastProcessor)).map(this::wrapper);
+                .get().getTransport().start(config,unicastProcessor)).map(this::wrapper) .doOnError(config.getThrowableConsumer());
     }
 
     private  RsocketServerSession wrapper(DisposableServer server){
