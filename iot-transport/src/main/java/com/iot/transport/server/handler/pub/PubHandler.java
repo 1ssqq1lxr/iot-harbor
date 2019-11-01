@@ -35,7 +35,7 @@ public class PubHandler implements DirectHandler {
                     switch (header.qosLevel()) {
                         case AT_MOST_ONCE:
                             serverConfig.getTopicManager().getConnectionsByTopic(variableHeader.topicName())
-                                    .stream()// 过滤掉本身 已经关闭的dispose
+                                    .stream().filter(c->!connection.equals(c) && !c.isDispose())// 过滤掉本身 已经关闭的dispose
                                     .forEach(c -> c.sendMessage(false, header.qosLevel(), header.isRetain(), variableHeader.topicName(),bytes).subscribe());
                             break;
                         case AT_LEAST_ONCE:

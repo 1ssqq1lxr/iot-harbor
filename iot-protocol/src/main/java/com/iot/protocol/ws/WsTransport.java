@@ -1,9 +1,9 @@
-package com.iot.protocol.mqtt;
+package com.iot.protocol.ws;
 
 import com.iot.api.RsocketConfiguration;
 import com.iot.api.TransportConnection;
 import com.iot.protocol.ProtocolTransport;
-
+import com.iot.protocol.mqtt.MqttProtocol;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -19,10 +19,10 @@ import java.util.Objects;
 
 
 @Slf4j
-public class MqttTransport extends ProtocolTransport {
+public class WsTransport extends ProtocolTransport {
 
-    public MqttTransport(MqttProtocol mqttProtocol) {
-        super(mqttProtocol);
+    public WsTransport(WsProtocol wsProtocol) {
+        super(wsProtocol);
     }
 
 

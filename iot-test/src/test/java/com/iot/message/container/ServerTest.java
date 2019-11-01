@@ -13,13 +13,13 @@ public class ServerTest {
     @Test
     public void testServer() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-      TransportServer.create("127.0.0.1",1884)
+      TransportServer.create("192.168.100.237",1884)
               .auth((s,p)->true)
               .heart(100000)
               .protocol(ProtocolType.MQTT)
               .ssl(false)
               .auth((username,password)->true)
-              .log(false)
+              .log(true)
               .messageHandler(new MemoryMessageHandler())
               .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
               .start()

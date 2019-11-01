@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class TopicManager {
 
 
-    private TopicMap<String, TransportConnection> pathMap  = new TopicMap();
+    private TopicMap<String, TransportConnection> pathMap = new TopicMap();
 
     private LoadingCache<String, Optional<List<TransportConnection>>> cache =
             CacheBuilder.newBuilder()//设置并发级别为8，并发级别是指可以同时写缓存的线程数
@@ -21,7 +21,7 @@ public class TopicManager {
                     .maximumSize(100)//是否需要统计缓存情况,该操作消耗一定的性能,生产环境应该去除
                     .recordStats()//设置写缓存后n秒钟过期
                     .expireAfterWrite(20, TimeUnit.MINUTES)//设置读写缓存后n秒钟过期,实际很少用到,类似于expireAfterWrite
-                    .build(new CacheLoader<String,Optional<List<TransportConnection>>>(){
+                    .build(new CacheLoader<String, Optional<List<TransportConnection>>>() {
                         @Override
                         public Optional<List<TransportConnection>> load(String key) throws Exception {
                             String[] methodArray = key.split("/");
@@ -30,29 +30,27 @@ public class TopicManager {
                     });
 
 
-    public Optional<List<TransportConnection>> getTopicConnection(String topic){
-        return cache.getUnchecked(topic);
+    public Optional<List<TransportConnection>> getTopicConnection(String topic) {
+        try {
+            return cache.getUnchecked(topic);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
 
-    public void  addTopicConnection(String topic,TransportConnection connection){
+    public void addTopicConnection(String topic, TransportConnection connection) {
         String[] methodArray = topic.split("/");
-        pathMap.putData(methodArray,connection);
+        pathMap.putData(methodArray, connection);
         cache.invalidate(topic);
     }
 
 
-    public void  deleteTopicConnection(String topic,TransportConnection connection){
+    public void deleteTopicConnection(String topic, TransportConnection connection) {
         String[] methodArray = topic.split("/");
-        pathMap.delete(methodArray,connection);
+        pathMap.delete(methodArray, connection);
         cache.invalidate(topic);
     }
-
-
-
-
-
-
 
 
 }

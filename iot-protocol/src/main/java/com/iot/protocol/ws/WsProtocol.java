@@ -1,9 +1,10 @@
-package com.iot.protocol.mqtt;
+package com.iot.protocol.ws;
 
 import com.google.common.collect.Lists;
-import com.iot.protocol.Protocol;
 import com.iot.common.annocation.ProtocolType;
+import com.iot.protocol.Protocol;
 import com.iot.protocol.ProtocolTransport;
+import com.iot.protocol.mqtt.MqttTransport;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -14,7 +15,7 @@ import io.netty.handler.codec.mqtt.MqttEncoder;
 import java.util.List;
 
 
-public class MqttProtocol implements Protocol {
+public class WsProtocol implements Protocol {
 
 
     @Override
@@ -24,11 +25,16 @@ public class MqttProtocol implements Protocol {
 
     @Override
     public ProtocolTransport getTransport() {
-        return  new MqttTransport(this);
+        return  new WsTransport(this);
     }
 
     @Override
     public List<ChannelHandler> getHandlers() {
-        return Lists.newArrayList( new MqttDecoder(),MqttEncoder.INSTANCE);
+        return Lists.newArrayList( new HttpServerCodec(),
+                new HttpObjectAggregator(65536),
+                new WebSocketServerProtocolHandler("/", "mqtt, mqttv3.1, mqttv3.1.1"),
+                new WebSocketFrameToByteBufDecoder(),
+                new ByteBufToWebSocketFrameEncoder(),
+                new MqttDecoder(),MqttEncoder.INSTANCE);
     }
 }

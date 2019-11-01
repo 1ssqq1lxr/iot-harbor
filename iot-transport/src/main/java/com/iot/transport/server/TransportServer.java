@@ -17,7 +17,6 @@ public class TransportServer  {
 
 
     private  TransportServer(){
-
     }
     public  static class TransportBuilder{
 

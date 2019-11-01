@@ -7,8 +7,9 @@ import com.iot.api.server.handler.MemoryChannelManager;
 import com.iot.api.server.handler.MemoryTopicManager;
 import com.iot.api.TransportConnection;
 import com.iot.config.RsocketServerConfig;
+import com.iot.protocol.ws.WsProtocol;
+import com.iot.protocol.ws.WsTransport;
 import com.iot.transport.server.handler.ServerMessageRouter;
-import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.netty.util.Attribute;
@@ -83,6 +84,8 @@ public class RsocketServerConnection implements RsocketServerSession {
         });
         inbound.receiveObject().cast(MqttMessage.class)
                 .subscribe(message -> messageRouter.handler(message, connection));
+        WsTransport wsTransport = new WsTransport(new WsProtocol());
+        wsTransport.connect(config);
     }
 
 
