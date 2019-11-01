@@ -2,5 +2,6 @@ package com.iot.common.annocation;
 
 public enum  ProtocolType {
 
-    MQTT
+    MQTT,
+    WS_MQTT
 }

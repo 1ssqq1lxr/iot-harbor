@@ -20,7 +20,7 @@ public class WsProtocol implements Protocol {
 
     @Override
     public boolean support(ProtocolType protocolType) {
-        return protocolType == ProtocolType.MQTT;
+        return protocolType == ProtocolType.WS_MQTT;
     }
 
     @Override

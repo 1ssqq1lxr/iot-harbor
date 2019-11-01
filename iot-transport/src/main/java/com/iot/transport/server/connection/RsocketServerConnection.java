@@ -7,8 +7,6 @@ import com.iot.api.server.handler.MemoryChannelManager;
 import com.iot.api.server.handler.MemoryTopicManager;
 import com.iot.api.TransportConnection;
 import com.iot.config.RsocketServerConfig;
-import com.iot.protocol.ws.WsProtocol;
-import com.iot.protocol.ws.WsTransport;
 import com.iot.transport.server.handler.ServerMessageRouter;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
@@ -17,6 +15,7 @@ import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.UnicastProcessor;
 import reactor.netty.Connection;
+import reactor.netty.DisposableChannel;
 import reactor.netty.DisposableServer;
 import reactor.netty.NettyInbound;
 
@@ -41,13 +40,17 @@ public class RsocketServerConnection implements RsocketServerSession {
 
     private ServerMessageRouter messageRouter;
 
-    public RsocketServerConnection(UnicastProcessor<TransportConnection> connections, DisposableServer server, RsocketServerConfig config) {
+
+    private DisposableServer wsDisposableServer;
+
+    public RsocketServerConnection(UnicastProcessor<TransportConnection> connections, DisposableServer server,DisposableServer wsDisposableServer, RsocketServerConfig config) {
         this.disposableServer = server;
         this.config = config;
         this.rsocketMessageHandler = config.getMessageHandler();
         this.topicManager = Optional.ofNullable(config.getTopicManager()).orElse(new MemoryTopicManager());
         this.channelManager = Optional.ofNullable(config.getChannelManager()).orElse(new MemoryChannelManager());
         this.messageRouter = new ServerMessageRouter(config);
+        this.wsDisposableServer=wsDisposableServer;
         connections.subscribe(this::subscribe);
 
     }
@@ -84,14 +87,12 @@ public class RsocketServerConnection implements RsocketServerSession {
         });
         inbound.receiveObject().cast(MqttMessage.class)
                 .subscribe(message -> messageRouter.handler(message, connection));
-        WsTransport wsTransport = new WsTransport(new WsProtocol());
-        wsTransport.connect(config);
     }
 
 
     @Override
     public Mono<List<TransportConnection>> getConnections() {
-        return null;
+        return Mono.just(channelManager.getConnections());
     }
 
     @Override
@@ -103,5 +104,7 @@ public class RsocketServerConnection implements RsocketServerSession {
     @Override
     public void dispose() {
         disposableServer.dispose();
+        Optional.ofNullable(wsDisposableServer)
+                .ifPresent(DisposableChannel::dispose);
     }
 }
