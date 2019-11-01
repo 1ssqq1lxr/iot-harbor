@@ -57,6 +57,7 @@
 -  支持ssl加密
 -  spring容器支持
 -  channel存储,topic存储,保留消息等外部接口支持
+-  MQTT 协议同时支持WS/TCP 传输,默认MQTT协议打开WS 8443端口
 
 
 
