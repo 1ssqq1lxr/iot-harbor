@@ -43,14 +43,14 @@ public class RsocketServerConnection implements RsocketServerSession {
 
     private DisposableServer wsDisposableServer;
 
-    public RsocketServerConnection(UnicastProcessor<TransportConnection> connections, DisposableServer server,DisposableServer wsDisposableServer, RsocketServerConfig config) {
+    public RsocketServerConnection(UnicastProcessor<TransportConnection> connections, DisposableServer server, DisposableServer wsDisposableServer, RsocketServerConfig config) {
         this.disposableServer = server;
         this.config = config;
         this.rsocketMessageHandler = config.getMessageHandler();
         this.topicManager = Optional.ofNullable(config.getTopicManager()).orElse(new MemoryTopicManager());
         this.channelManager = Optional.ofNullable(config.getChannelManager()).orElse(new MemoryChannelManager());
         this.messageRouter = new ServerMessageRouter(config);
-        this.wsDisposableServer=wsDisposableServer;
+        this.wsDisposableServer = wsDisposableServer;
         connections.subscribe(this::subscribe);
 
     }
@@ -83,7 +83,9 @@ public class RsocketServerConnection implements RsocketServerSession {
                                 }
                             })));
             channelManager.removeConnections(connection); // 删除链接
-            connection.getTopics().forEach(topic->topicManager.deleteTopicConnection(topic,connection)); // 删除topic订阅
+            connection.getTopics().forEach(topic -> topicManager.deleteTopicConnection(topic, connection)); // 删除topic订阅
+            String  deviceId=connection.getConnection().channel().attr(AttributeKeys.device_id).get(); // 设置device Id
+            channelManager.removeDeviceId(deviceId);
         });
         inbound.receiveObject().cast(MqttMessage.class)
                 .subscribe(message -> messageRouter.handler(message, connection));
@@ -97,7 +99,8 @@ public class RsocketServerConnection implements RsocketServerSession {
 
     @Override
     public Mono<Void> closeConnect(String clientId) {
-        return null;
+        return Mono.fromRunnable(()->Optional.ofNullable(channelManager.getRemoveDeviceId(clientId))
+                .ifPresent(TransportConnection::dispose));
     }
 
 

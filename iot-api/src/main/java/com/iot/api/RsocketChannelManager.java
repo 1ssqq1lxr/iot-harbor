@@ -11,4 +11,10 @@ public interface RsocketChannelManager  {
 
 
      void removeConnections(TransportConnection connection);
+
+     void addDeviceId(String deviceId, TransportConnection connection);
+
+     void removeDeviceId(String deviceId);
+
+     TransportConnection getRemoveDeviceId(String deviceId);
 }
