@@ -14,6 +14,7 @@ import io.netty.util.Attribute;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.UnicastProcessor;
+import reactor.netty.Connection;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
@@ -81,6 +82,7 @@ public class MqttTransport extends ProtocolTransport {
                 .connect()
                 .doOnError(config.getThrowableConsumer())
                 .retry()
+                .cast(Connection.class)
                 .subscribe(connection -> {
                     protocol.getHandlers().forEach(connection::addHandler);
                     transportConnection.setConnection(connection);

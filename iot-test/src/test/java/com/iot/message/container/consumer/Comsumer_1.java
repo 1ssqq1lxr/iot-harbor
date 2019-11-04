@@ -14,7 +14,7 @@ public class Comsumer_1 {
     @Test
     public void testClient() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-    RsocketClientSession clientSession= TransportClient.create("127.0.0.1",1884)
+    RsocketClientSession clientSession= TransportClient.create("192.168.100.237",1884)
               .heart(10000)
               .protocol(ProtocolType.MQTT)
               .ssl(false)
