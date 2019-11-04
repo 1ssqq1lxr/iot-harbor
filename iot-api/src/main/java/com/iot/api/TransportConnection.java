@@ -51,6 +51,7 @@ public class TransportConnection implements Disposable {
         this.outbound=connection.outbound();
     }
 
+
     public void addTopic(String topic){
         topics.add(topic);
     }

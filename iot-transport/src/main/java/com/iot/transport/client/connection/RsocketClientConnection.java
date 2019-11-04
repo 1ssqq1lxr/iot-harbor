@@ -32,14 +32,14 @@ public class RsocketClientConnection implements RsocketClientSession {
     public RsocketClientConnection(TransportConnection connection, RsocketClientConfig clientConfig) {
         this.clientConfig = clientConfig;
         this.connection = connection;
+        this.clientMessageRouter = new ClientMessageRouter(clientConfig);
         initHandler();
     }
 
     public void  initHandler(){
-        this.clientMessageRouter = new ClientMessageRouter(clientConfig);
         RsocketClientConfig.Options options = clientConfig.getOptions();
         NettyInbound inbound = connection.getInbound();
-        MqttConnectMessage connectMessage=MqttMessageApi.buildConnect(
+        Disposable disposable=Mono.fromRunnable(() -> connection.write(MqttMessageApi.buildConnect(
                 options.getClientIdentifier(),
                 options.getWillTopic(),
                 options.getWillMessage(),
@@ -49,16 +49,14 @@ public class RsocketClientConnection implements RsocketClientSession {
                 options.isHasPassword(),
                 options.isHasWillFlag(),
                 options.getWillQos()
-        );
-        Disposable disposable=Mono.fromRunnable(() -> connection.write(connectMessage).subscribe()).delaySubscription(Duration.ofSeconds(2)).repeat().subscribe();
+        )).subscribe()).delaySubscription(Duration.ofSeconds(2)).repeat().subscribe();
         connection.getConnection().channel().attr(AttributeKeys.closeConnection).set(disposable);
         connection.getConnection().onWriteIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
-        connection.getConnection().onReadIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
+        connection.getConnection().onReadIdle(clientConfig.getHeart()*2, () -> connection.sendPingReq().subscribe()); // 发送心跳
         connection.getConnection().onDispose(()->clientConfig.getOnClose().run());
         inbound.receiveObject().cast(MqttMessage.class)
                 .subscribe(message ->  clientMessageRouter.handler(message, connection));
         connection.getConnection().channel().attr(AttributeKeys.clientConnectionAttributeKey).set(this);
-
     }
 
     @Override

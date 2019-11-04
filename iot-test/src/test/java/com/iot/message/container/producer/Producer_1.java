@@ -32,8 +32,6 @@ public class Producer_1 {
                })
               .connect()
               .block();
-        clientSession.pub("test","Producer_1".getBytes(),0).subscribe();
-        clientSession.pub("test","Producer_1".getBytes(),true,1).subscribe();
         latch.await();
 
 

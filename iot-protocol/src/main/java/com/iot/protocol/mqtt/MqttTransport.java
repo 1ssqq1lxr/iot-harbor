@@ -85,10 +85,15 @@ public class MqttTransport extends ProtocolTransport {
                 .cast(Connection.class)
                 .subscribe(connection -> {
                     protocol.getHandlers().forEach(connection::addHandler);
-                    transportConnection.setConnection(connection);
                     Optional.ofNullable(transportConnection.getConnection().channel().attr(AttributeKeys.clientConnectionAttributeKey))
                             .map(Attribute::get)
-                            .ifPresent(RsocketClientSession::initHandler);
+                            .ifPresent(rsocketClientSession ->{
+                                transportConnection.setConnection(connection);
+                                transportConnection.setInbound(connection.inbound());
+                                transportConnection.setOutbound(connection.outbound());
+                                rsocketClientSession.initHandler();
+                            });
+
                 });
     }
 
