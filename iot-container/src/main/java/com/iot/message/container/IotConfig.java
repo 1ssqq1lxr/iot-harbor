@@ -15,7 +15,7 @@ public class IotConfig {
 
 
 
-     @Data
+    @Data
     public  static  class  Server{
         private  boolean enable;
 
@@ -33,6 +33,8 @@ public class IotConfig {
 
 
     }
+
+
 
 
 

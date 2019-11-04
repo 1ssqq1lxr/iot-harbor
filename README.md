@@ -21,16 +21,20 @@
 
 #### 服务端使用说明
 ```java
-      TransportServer.create("127.0.0.1",1884)
-              .heart(100000) // 心跳(单位:毫秒)
-              .protocol(ProtocolType.MQTT)
-              .ssl(true) // 开启ssl
-              .auth((username,password)->true) // 认证用户密码
-              .log(true) // 开启报文日志
-              .exception(throwable -> {}) // 异常处理
-              .messageHandler(new MemoryMessageHandler()) // 处理保留消息 默认走内存,可以自定义外部实现
-              .start()
-              .subscribe();
+          RsocketServerSession serverSession=TransportServer.create("192.168.100.237",1884)
+                  .auth((s,p)->true)
+                  .heart(100000)
+                  .protocol(ProtocolType.MQTT)
+                  .ssl(false)
+                  .auth((username,password)->true)
+                  .log(true)
+                  .messageHandler(new MemoryMessageHandler())
+                  .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
+                  .start()
+                  .block();
+            serverSession.closeConnect("device-1").subscribe();// 关闭设备端
+            List<TransportConnection> connections= serverSession.getConnections().block(); // 获取所有链接
+ 
 ```
 
 
@@ -40,23 +44,26 @@
 ```java
         RsocketClientSession clientSession= TransportClient.create("127.0.0.1",1884)
                   .heart(10000)
-                  .protocol(ProtocolType.MQTT)
-                  .ssl(false)
-                  .log(true)
-                  .clientId("Comsumer_3")
-                    .password("12")
-                    .username("123")
-                    .willMessage("123")
-                    .willTopic("/lose")
-                  .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
+                  .protocol(ProtocolType.MQTT) // 指定协议 MQTT 包含 TCP/WS 两个端口 默认WS走的8443     WS协议 仅仅启动TCP协议
+                  .ssl(false)  // 开发tls加密
+                  .log(true)  // 打印报文日志
+                  .onClose(()->{}) // 客户端关闭事件
+                  .clientId("Comsumer_3") // 客户端id
+                  .password("12") // 密码
+                  .username("123") // 用户名
+                  .willMessage("123") // 遗嘱消息
+                  .willTopic("/lose") // 遗嘱消息topic
+                   .willQos(MqttQoS.AT_LEAST_ONCE) // 遗嘱消息qos
+                  .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable)) // 异常处理
                   .messageAcceptor((topic,msg)->{
                         System.out.println(topic+":"+new String(msg));
-                   })
+                   }) // 消息接收处理
                   .connect()
                   .block();
-            clientSession.sub("test").subscribe(); // 订阅
-             clientSession.pub("test","Producer_3".getBytes()).subscribe();
-
+             clientSession.sub("test").subscribe(); // 订阅
+             clientSession.pub("test","Producer_3".getBytes()).subscribe(); // 发布qos0消息
+             clientSession.pub("test","Producer_1".getBytes(),1).subscribe();  // 发布qos1消息
+             clientSession.pub("test","Producer_1".getBytes(),true,1).subscribe();  // 发布qos1消息 保留消息
             
 ```
 

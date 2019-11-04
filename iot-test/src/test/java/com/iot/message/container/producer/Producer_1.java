@@ -23,6 +23,7 @@ public class Producer_1 {
               .clientId("Producer_1")
                 .password("12")
             .username("123")
+            .onClose(()->{})
             .willMessage("123")
             .willTopic("/lose")
               .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
@@ -32,6 +33,7 @@ public class Producer_1 {
               .connect()
               .block();
         clientSession.pub("test","Producer_1".getBytes(),0).subscribe();
+        clientSession.pub("test","Producer_1".getBytes(),true,1).subscribe();
         latch.await();
 
 
