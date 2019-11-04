@@ -25,13 +25,17 @@ public class RsocketClientConnection implements RsocketClientSession {
 
     private final RsocketClientConfig clientConfig;
 
-    private final ClientMessageRouter clientMessageRouter;
+    private  ClientMessageRouter clientMessageRouter;
 
     private List<String> topics = Lists.newArrayList();
 
     public RsocketClientConnection(TransportConnection connection, RsocketClientConfig clientConfig) {
         this.clientConfig = clientConfig;
         this.connection = connection;
+        initHandler();
+    }
+
+    public void  initHandler(){
         this.clientMessageRouter = new ClientMessageRouter(clientConfig);
         RsocketClientConfig.Options options = clientConfig.getOptions();
         NettyInbound inbound = connection.getInbound();
@@ -50,10 +54,10 @@ public class RsocketClientConnection implements RsocketClientSession {
         connection.getConnection().channel().attr(AttributeKeys.closeConnection).set(disposable);
         connection.getConnection().onWriteIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
         connection.getConnection().onReadIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
-//        connection.getConnection().onDispose(()->clientConfig.getOnClose().run());
+        connection.getConnection().onDispose(()->clientConfig.getOnClose().run());
         inbound.receiveObject().cast(MqttMessage.class)
                 .subscribe(message ->  clientMessageRouter.handler(message, connection));
-
+        connection.getConnection().channel().attr(AttributeKeys.clientConnectionAttributeKey).set(this);
 
     }
 

@@ -34,7 +34,7 @@ public class RsocketClientConfig implements RsocketConfiguration {
 
     private BiConsumer<String,byte[]> messageAcceptor;
 
-    private Runnable onClose;
+    private Runnable onClose = ()->{};
 
 
     public void checkConfig() {

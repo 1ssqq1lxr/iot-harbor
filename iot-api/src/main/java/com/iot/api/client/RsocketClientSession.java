@@ -25,6 +25,8 @@ public interface RsocketClientSession  extends  Disposable{
 
     Mono<Void> messageAcceptor(BiConsumer<String,byte[]> messageAcceptor);
 
+    void  initHandler();
+
 
 
 }
