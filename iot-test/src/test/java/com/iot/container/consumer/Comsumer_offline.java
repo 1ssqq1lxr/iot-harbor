@@ -1,4 +1,4 @@
-package com.iot.message.container.consumer;
+package com.iot.container.consumer;
 
 import com.iot.api.client.RsocketClientSession;
 import com.iot.common.annocation.ProtocolType;

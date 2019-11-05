@@ -29,6 +29,6 @@ public class MqttProtocol implements Protocol {
 
     @Override
     public List<ChannelHandler> getHandlers() {
-        return Lists.newArrayList( new MqttDecoder(),MqttEncoder.INSTANCE);
+        return Lists.newArrayList( new MqttDecoder(5*1024*1024),MqttEncoder.INSTANCE);
     }
 }

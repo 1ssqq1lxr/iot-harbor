@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>iot-harbor</artifactId>
-        <groupId>com.github.1ssqq1lxr</groupId>
+        <groupId>com.iot.mqtt</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -44,7 +44,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.1ssqq1lxr</groupId>
+            <groupId>com.iot.mqtt</groupId>
             <artifactId>iot-transport</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

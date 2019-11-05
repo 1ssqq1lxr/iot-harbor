@@ -1,4 +1,4 @@
-package com.iot.message.container.producer;
+package com.iot.container.producer;
 
 import com.iot.api.client.RsocketClientSession;
 import com.iot.common.annocation.ProtocolType;
@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.util.concurrent.CountDownLatch;
 
 
-public class Producer_2 {
+public class Producer_3 {
 
     @Test
     public void testClient() throws InterruptedException {
@@ -18,7 +18,7 @@ public class Producer_2 {
               .protocol(ProtocolType.MQTT)
               .ssl(false)
               .log(true)
-              .clientId("Producer_2")
+              .clientId("Producer_3")
                 .password("12")
             .username("123")
             .willMessage("123")

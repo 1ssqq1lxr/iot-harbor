@@ -1,4 +1,4 @@
-package com.iot.message.container;
+package com.iot.container;
 
 
 import com.iot.common.annocation.ProtocolType;

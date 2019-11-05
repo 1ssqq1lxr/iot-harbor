@@ -1,15 +1,16 @@
-package com.iot.message.container.consumer;
+package com.iot.container.producer;
 
 import com.iot.api.client.RsocketClientSession;
+import com.iot.api.server.handler.MemoryMessageHandler;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.transport.client.TransportClient;
-import io.netty.handler.codec.mqtt.MqttQoS;
+import com.iot.transport.server.TransportServer;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 
 
-public class Comsumer_1 {
+public class Producer_1 {
 
     @Test
     public void testClient() throws InterruptedException {
@@ -19,22 +20,18 @@ public class Comsumer_1 {
               .protocol(ProtocolType.MQTT)
               .ssl(false)
               .log(false)
-              .clientId("Comsumer_1")
+              .clientId("Producer_1")
                 .password("12")
             .username("123")
-            .willMessage("Comsumer_1")
-            .willTopic("/lose/Comsumer_1")
-            .willQos(MqttQoS.AT_LEAST_ONCE)
+            .onClose(()->{})
+            .willMessage("123")
+            .willTopic("/lose")
               .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
               .messageAcceptor((topic,msg)->{
                     System.out.println(topic+":"+new String(msg));
                })
               .connect()
               .block();
-        Thread.sleep(5000);
-        clientSession.sub("test").subscribe();
-        clientSession.sub("test3").subscribe();
-        clientSession.sub("test4").subscribe();
         latch.await();
 
 
