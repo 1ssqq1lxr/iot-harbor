@@ -57,6 +57,12 @@ public class RsocketClientConnection implements RsocketClientSession {
         inbound.receiveObject().cast(MqttMessage.class)
                 .subscribe(message ->  clientMessageRouter.handler(message, connection));
         connection.getConnection().channel().attr(AttributeKeys.clientConnectionAttributeKey).set(this);
+        List<MqttTopicSubscription> mqttTopicSubscriptions=connection.getTopics().stream().map(s -> new MqttTopicSubscription(s, MqttQoS.AT_MOST_ONCE)).collect(Collectors.toList());
+        int messageId = connection.messageId();
+        connection.addDisposable(messageId, Mono.fromRunnable(() ->
+                connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe())
+                .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
+        connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe();
     }
 
     @Override
@@ -105,6 +111,7 @@ public class RsocketClientConnection implements RsocketClientSession {
                 .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
         return connection.write(MqttMessageApi.buildSub(messageId, topicSubscriptions));
     }
+
 
     @Override
     public Mono<Void> unsub(List<String> topics) {

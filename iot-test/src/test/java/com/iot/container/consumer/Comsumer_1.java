@@ -1,11 +1,13 @@
 package com.iot.container.consumer;
 
+import com.alibaba.fastjson.JSON;
 import com.iot.api.client.RsocketClientSession;
 import com.iot.common.annocation.ProtocolType;
 import com.iot.transport.client.TransportClient;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -27,14 +29,16 @@ public class Comsumer_1 {
             .willQos(MqttQoS.AT_LEAST_ONCE)
               .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
               .messageAcceptor((topic,msg)->{
-                    System.out.println(topic+":"+new String(msg));
-               })
+                  try {
+                      System.out.println(topic+":"+ new String(msg));
+                  } catch (Exception e) {
+                      e.printStackTrace();
+                  }
+              })
               .connect()
               .block();
         Thread.sleep(5000);
-        clientSession.sub("test").subscribe();
-        clientSession.sub("test3").subscribe();
-        clientSession.sub("test4").subscribe();
+        clientSession.sub("/dict/asr_resualt/test1234").subscribe();
         latch.await();
 
 

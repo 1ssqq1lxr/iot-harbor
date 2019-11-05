@@ -52,6 +52,14 @@ public class TransportConnection implements Disposable {
     }
 
 
+    public void destory() {
+        concurrentHashMap.values().forEach(Disposable::dispose);
+        concurrentHashMap.clear();
+        qos2Message.clear();
+        topics.clear();
+    }
+
+
     public void addTopic(String topic){
         topics.add(topic);
     }
@@ -140,8 +148,6 @@ public class TransportConnection implements Disposable {
         MqttPublishMessage publishMessage = MqttMessageApi.buildPub(isDup,qoS,isRetain,id,topic, Unpooled.wrappedBuffer(message)); // pub
        return this.write(publishMessage);
     }
-
-
 
 
 }

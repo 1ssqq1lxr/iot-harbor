@@ -87,6 +87,7 @@ public class RsocketServerConnection implements RsocketServerSession {
             Optional.ofNullable(connection.getConnection().channel().attr(AttributeKeys.device_id))
                     .map(Attribute::get)
                     .ifPresent(channelManager::removeDeviceId); // 设置device Id
+            connection.destory();
         });
         inbound.receiveObject().cast(MqttMessage.class)
                 .subscribe(message -> messageRouter.handler(message, connection));
