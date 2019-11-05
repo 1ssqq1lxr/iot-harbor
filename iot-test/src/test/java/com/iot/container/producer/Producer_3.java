@@ -13,7 +13,7 @@ public class Producer_3 {
     @Test
     public void testClient() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-    RsocketClientSession clientSession= TransportClient.create("127.0.0.1",1884)
+    RsocketClientSession clientSession= TransportClient.create("192.168.100.237",1884)
               .heart(10000)
               .protocol(ProtocolType.MQTT)
               .ssl(false)
@@ -29,11 +29,10 @@ public class Producer_3 {
                })
               .connect()
               .block();
-        clientSession.pub("test","Producer_3".getBytes()).subscribe();
+        for(int i=0;i<20;i++){
+            clientSession.pub("/dict/asr_resualt/test1234","Producer_3".getBytes(),1).subscribe();
+        }
         latch.await();
-
-
-
     }
 
 }
