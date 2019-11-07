@@ -22,7 +22,7 @@ public class ServerTest {
                   .protocol(ProtocolType.MQTT)
                   .ssl(false)
                   .auth((username,password)->true)
-                  .log(true)
+                  .log(false)
                   .messageHandler(new MemoryMessageHandler())
                   .exception(throwable -> System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+throwable))
                   .start()
