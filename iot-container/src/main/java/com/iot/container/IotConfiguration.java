@@ -17,6 +17,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
@@ -60,6 +61,7 @@ public class IotConfiguration implements ApplicationContextAware {
         IotConfig.Client client=iotConfig.getClient();
         MessageAcceptor messageAcceptor =this.applicationContext.getBean(MessageAcceptor.class);
         ExceptorAcceptor exceptorAcceptor =this.applicationContext.getBean(ExceptorAcceptor.class);
+        OnCloseListener onCloseListener= this.applicationContext.getBean(OnCloseListener.class);
         return TransportClient.create(client.getIp(),client.getPort())
                 .heart(client.getHeart())
                 .protocol(client.getProtocol())
@@ -71,7 +73,8 @@ public class IotConfiguration implements ApplicationContextAware {
                 .willMessage(client.getOption().getWillMessage())
                 .willTopic(client.getOption().getWillTopic())
                 .willQos(client.getOption().getWillQos())
-                .exception(exceptorAcceptor::accept)
+                .onClose(()-> Optional.ofNullable(onCloseListener).ifPresent(OnCloseListener::start))
+                .exception(throwable->Optional.ofNullable(exceptorAcceptor).ifPresent(ec->ec.accept(throwable)))
                 .messageAcceptor(messageAcceptor::accept)
                 .connect()
                 .block();
