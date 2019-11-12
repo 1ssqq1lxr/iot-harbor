@@ -69,10 +69,22 @@
 
 
 
-#### 客户端使用说明
+#### 服务端使用说明
 ```spring 容器中使用
-        
-
+yaml 配置:
+iot:
+  mqtt:
+    server:
+      enable: true
+      host: 192.168.100.237
+      port: 8081
+      log: false
+      protocol: MQTT
+      heart: 100000
+      ssl: false
+设备校验：实现AuthencationSession接口注入容器即可
+异常处理：实现ExceptorAcceptor接口注入容器即可
+保留消息处理：实现RsocketMessageHandler接口注入容器即可，默认使用内存。      
             
 ```
 

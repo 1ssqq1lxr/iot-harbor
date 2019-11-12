@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 @Configuration
 //开启自动配置，注册一个IdGeneratorProperties类型的配置bean到spring容器，同普通的@EnableAsync等开关一样
@@ -28,6 +29,7 @@ public class IotConfiguration implements ApplicationContextAware {
 
     private ConfigurableApplicationContext applicationContext;
 
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = (ConfigurableApplicationContext) applicationContext;
@@ -35,22 +37,27 @@ public class IotConfiguration implements ApplicationContextAware {
 
     @Bean
     @ConditionalOnProperty(prefix = "iot.mqtt.server",name = "enable", havingValue = "true")
-    public RsocketServerSession initServer(@Autowired IotConfig iotConfig)  {
-        BiFunction<String,String,Boolean> auth= (u,p)->true;
-        AuthencationSession authencationSession =this.applicationContext.getBean(AuthencationSession.class);
-        if(authencationSession != null){
-            auth = (u,p)->authencationSession.auth(u,p);
-        }
-        ExceptorAcceptor exceptorAcceptor =this.applicationContext.getBean(ExceptorAcceptor.class);
-        RsocketMessageHandler messageHandler =this.applicationContext.getBean(RsocketMessageHandler.class);
+    public RsocketServerSession initServer(@Autowired IotConfig iotConfig,@Autowired(required = false) AuthencationSession authencationSession
+                                           ,@Autowired(required = false)  ExceptorAcceptor exceptorAcceptor,
+                                           @Autowired(required = false) RsocketMessageHandler messageHandler )  {
+        BiFunction<String,String,Boolean> auth = Optional.ofNullable(authencationSession)
+                .map(au-> {
+                    BiFunction<String,String,Boolean> consumer = (u,p)->authencationSession.auth(u,p);
+                    return  consumer;
+                }).orElse((u,p)->true);
+        Consumer<Throwable> throwableConsumer = Optional.ofNullable(exceptorAcceptor)
+                .map(ea-> {
+                    Consumer<Throwable> consumer = ts->ea.accept(ts);
+                    return  consumer;
+                }).orElse(ts->{});
         return TransportServer.create(iotConfig.getServer().getHost(),iotConfig.getServer().getPort())
                 .heart(iotConfig.getServer().getHeart())
                 .log(iotConfig.getServer().isLog())
-                .protocol(ProtocolType.MQTT)
+                .protocol(iotConfig.getServer().getProtocol())
                 .auth(auth)
                 .ssl(iotConfig.getServer().isSsl())
                 .messageHandler(messageHandler)
-                .exception(exceptorAcceptor::accept)
+                .exception(System.out::println)
                 .start()
                 .block();
     }

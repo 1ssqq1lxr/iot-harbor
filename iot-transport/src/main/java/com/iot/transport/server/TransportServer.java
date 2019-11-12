@@ -7,6 +7,7 @@ import com.iot.common.annocation.ProtocolType;
 import com.iot.config.RsocketServerConfig;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -59,12 +60,14 @@ public class TransportServer  {
 
 
         public TransportServer.TransportBuilder messageHandler(RsocketMessageHandler messageHandler ){
-            config.setMessageHandler(messageHandler);
+            Optional.ofNullable(messageHandler)
+                    .ifPresent(config::setMessageHandler);
             return this;
         }
 
         public TransportServer.TransportBuilder exception(Consumer<Throwable> exceptionConsumer ){
-            config.setThrowableConsumer(exceptionConsumer);
+            Optional.ofNullable(exceptionConsumer)
+                    .ifPresent(config::setThrowableConsumer);
             return this;
         }
 

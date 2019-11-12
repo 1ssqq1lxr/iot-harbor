@@ -44,6 +44,8 @@ public class IotConfig {
 
     @Data
     public  static  class  Client{
+        private  boolean enable;
+
         private String ip;
 
         private int  port;
