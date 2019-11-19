@@ -35,6 +35,6 @@ public class WsProtocol implements Protocol {
                 new WebSocketServerProtocolHandler("/", "mqtt, mqttv3.1, mqttv3.1.1"),
                 new WebSocketFrameToByteBufDecoder(),
                 new ByteBufToWebSocketFrameEncoder(),
-                new MqttDecoder(),MqttEncoder.INSTANCE);
+                new MqttDecoder(5*1024*1024),MqttEncoder.INSTANCE);
     }
 }
