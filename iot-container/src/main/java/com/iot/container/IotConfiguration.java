@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.netty.ConnectionObserver;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -37,9 +38,11 @@ public class IotConfiguration implements ApplicationContextAware {
 
     @Bean
     @ConditionalOnProperty(prefix = "iot.mqtt.server",name = "enable", havingValue = "true")
-    public RsocketServerSession initServer(@Autowired IotConfig iotConfig,@Autowired(required = false) AuthencationSession authencationSession
-                                           ,@Autowired(required = false)  ExceptorAcceptor exceptorAcceptor,
-                                           @Autowired(required = false) RsocketMessageHandler messageHandler )  {
+    public RsocketServerSession initServer(@Autowired IotConfig iotConfig,
+                                           @Autowired(required = false) AuthencationSession authencationSession,
+                                           @Autowired(required = false) ExceptorAcceptor exceptorAcceptor,
+                                           @Autowired(required = false) RsocketMessageHandler messageHandler
+    )  {
         BiFunction<String,String,Boolean> auth = Optional.ofNullable(authencationSession)
                 .map(au-> {
                     BiFunction<String,String,Boolean> consumer = (u,p)->authencationSession.auth(u,p);
@@ -54,6 +57,11 @@ public class IotConfiguration implements ApplicationContextAware {
                 .heart(iotConfig.getServer().getHeart())
                 .log(iotConfig.getServer().isLog())
                 .protocol(iotConfig.getServer().getProtocol())
+                .backlog(iotConfig.getServer().getBacklog())
+                .revBufSize(iotConfig.getServer().getRevBufSize())
+                .sendBufSize(iotConfig.getServer().getSendBufSize())
+                .noDelay(iotConfig.getServer().isNoDelay())
+                .keepAlive(iotConfig.getServer().isKeepAlive())
                 .auth(auth)
                 .ssl(iotConfig.getServer().isSsl())
                 .messageHandler(messageHandler)

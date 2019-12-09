@@ -67,12 +67,12 @@ public class PubHandler implements DirectHandler {
                     break;
                 case PUBACK:
                     MqttMessageIdVariableHeader Back = (MqttMessageIdVariableHeader) message.variableHeader();
-                    connection.cancleDisposable(Back.messageId());
+                    connection.cancelDisposable(Back.messageId());
                     break;
                 case PUBREC:
                     MqttMessageIdVariableHeader recVH = (MqttMessageIdVariableHeader) message.variableHeader();
                     int id = recVH.messageId();
-                    connection.cancleDisposable(id);
+                    connection.cancelDisposable(id);
                     connection.write(MqttMessageApi.buildPubRel(id)).subscribe();  //  send rel
                     connection.addDisposable(id, Mono.fromRunnable(() ->
                             connection.write(MqttMessageApi.buildPubRel(id)).subscribe())
@@ -81,7 +81,7 @@ public class PubHandler implements DirectHandler {
                 case PUBREL:
                     MqttMessageIdVariableHeader rel = (MqttMessageIdVariableHeader) message.variableHeader();
                     int messageId = rel.messageId();
-                    connection.cancleDisposable(messageId); // cacel replay rec
+                    connection.cancelDisposable(messageId); // cancel replay rec
                     MqttPubAckMessage mqttPubRecMessage = MqttMessageApi.buildPubComp(messageId);
                     connection.write(mqttPubRecMessage).subscribe();  //  send comp
                     connection.getAndRemoveQos2Message(messageId)
@@ -91,7 +91,7 @@ public class PubHandler implements DirectHandler {
                     break;
                 case PUBCOMP:
                     MqttMessageIdVariableHeader compVH = (MqttMessageIdVariableHeader) message.variableHeader();
-                    connection.cancleDisposable(compVH.messageId());
+                    connection.cancelDisposable(compVH.messageId());
                     break;
             }
     }

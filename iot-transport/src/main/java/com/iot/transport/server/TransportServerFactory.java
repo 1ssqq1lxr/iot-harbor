@@ -35,8 +35,12 @@ public class TransportServerFactory {
             RsocketServerConfig wsConfig=copy(config);
             ws_server=wsTransport.start(wsConfig,unicastProcessor).block();
         }
-        return  Mono.from(protocolFactory.getProtocol(ProtocolType.valueOf(config.getProtocol()))
-                .get().getTransport().start(config,unicastProcessor)).map(this::wrapper) .doOnError(config.getThrowableConsumer());
+        return  Mono.from(
+                protocolFactory.getProtocol(ProtocolType.valueOf(config.getProtocol()))
+                .get().getTransport()
+                .start(config,unicastProcessor))
+                .map(this::wrapper)
+                .doOnError(config.getThrowableConsumer());
     }
 
     private RsocketServerConfig copy(RsocketServerConfig config) {
@@ -52,6 +56,10 @@ public class TransportServerFactory {
         serverConfig.setProtocol(ProtocolType.WS_MQTT.name());
         serverConfig.setHeart(config.getHeart());
         serverConfig.setTopicManager(config.getTopicManager());
+        serverConfig.setRevBufSize(config.getRevBufSize());
+        serverConfig.setSendBufSize(config.getSendBufSize());
+        serverConfig.setNoDelay(config.isNoDelay());
+        serverConfig.setKeepAlive(config.isKeepAlive());
         return  serverConfig;
     }
 

@@ -25,6 +25,15 @@ public interface RsocketConfiguration {
 
     void checkConfig();
 
+    boolean isKeepAlive();
+    
+    boolean isNoDelay();
+    
+    int getSendBufSize();
+    
+    int getRevBufSize();
+    
+    int getBacklog();
 
 
 }

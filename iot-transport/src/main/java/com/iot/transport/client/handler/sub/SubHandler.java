@@ -16,7 +16,7 @@ public class SubHandler implements DirectHandler {
             switch (header.messageType()){
                 case  SUBACK:
                 case UNSUBACK:
-                    connection.cancleDisposable(mqttMessageIdVariableHeader.messageId());
+                    connection.cancelDisposable(mqttMessageIdVariableHeader.messageId());
                     break;
             }
     }

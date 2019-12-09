@@ -1,7 +1,7 @@
 package com.iot.api;
 
 
-import com.iot.common.connection.ReatinMessage;
+import com.iot.common.connection.RetainMessage;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,5 +13,5 @@ public interface RsocketMessageHandler {
 
     void saveRetain(boolean dup, boolean retain, int qos, String topicName, byte[] copyByteBuf);
 
-    Optional<List<ReatinMessage>> getRetain(String topicName);
+    Optional<List<RetainMessage>> getRetain(String topicName);
 }

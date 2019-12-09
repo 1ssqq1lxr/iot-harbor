@@ -4,6 +4,8 @@ import com.iot.api.RsocketConfiguration;
 import com.iot.api.TransportConnection;
 import com.iot.protocol.ProtocolTransport;
 import com.iot.protocol.mqtt.MqttProtocol;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.ChannelOption;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -42,7 +44,14 @@ public class WsTransport extends ProtocolTransport {
         TcpServer server =TcpServer.create()
                 .port(config.getPort())
                 .wiretap(config.isLog())
-                .host(config.getIp());
+                .host(config.getIp())
+                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                .option(ChannelOption.SO_KEEPALIVE, config.isKeepAlive())
+                .option(ChannelOption.TCP_NODELAY, config.isNoDelay())
+                .option(ChannelOption.SO_BACKLOG, config.getBacklog())
+                .option(ChannelOption.SO_RCVBUF, config.getRevBufSize())
+                .option(ChannelOption.SO_SNDBUF, config.getSendBufSize())
+                ;
             return  config.isSsl()?server.secure(sslContextSpec -> sslContextSpec.sslContext(Objects.requireNonNull(buildContext()))):server;
 
     }
