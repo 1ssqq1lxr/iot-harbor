@@ -120,7 +120,7 @@ public class TransportConnection implements Disposable {
     }
 
 
-    public  void  cancleDisposable(Integer messageId){
+    public  void  cancelDisposable(Integer messageId){
         Optional.ofNullable(concurrentHashMap.get(messageId))
                 .ifPresent(dispose->dispose.dispose());
         concurrentHashMap.remove(messageId);

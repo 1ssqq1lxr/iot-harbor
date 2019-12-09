@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ReatinMessage {
+public class RetainMessage
+{
     private boolean dup;
     private boolean retain;
     private int qos;
