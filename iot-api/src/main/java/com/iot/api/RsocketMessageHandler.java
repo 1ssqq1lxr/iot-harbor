@@ -13,5 +13,5 @@ public interface RsocketMessageHandler {
 
     void saveRetain(boolean dup, boolean retain, int qos, String topicName, byte[] copyByteBuf);
 
-    Optional<List<RetainMessage>> getRetain(String topicName);
+    Optional<RetainMessage> getRetain(String topicName);
 }

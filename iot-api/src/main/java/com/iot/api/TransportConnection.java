@@ -7,6 +7,7 @@ import io.netty.handler.codec.mqtt.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,6 +25,7 @@ import java.util.concurrent.atomic.LongAdder;
 @Getter
 @Setter
 @ToString
+@Slf4j
 public class TransportConnection implements Disposable {
 
     private NettyInbound inbound;
@@ -70,7 +72,8 @@ public class TransportConnection implements Disposable {
 
 
     public Mono<Void> write(Object object){
-      return outbound.sendObject(object).then();
+      log.info("write:"+object);
+      return outbound.sendObject(object).then().doOnError(Throwable::printStackTrace);
     }
 
 
@@ -140,6 +143,7 @@ public class TransportConnection implements Disposable {
     public  Mono<Void> sendMessage(boolean isDup, MqttQoS qoS, boolean isRetain, String topic, byte[] message){
         return this.write(MqttMessageApi.buildPub(isDup,qoS,isRetain,1,topic, Unpooled.wrappedBuffer(message)));
     }
+
     public   Mono<Void> sendMessageRetry(boolean isDup, MqttQoS qoS, boolean isRetain, String topic, byte[] message){
         int id = this.messageId();
         this.addDisposable(id, Mono.fromRunnable(() ->

@@ -74,10 +74,12 @@ public class MqttTransport extends ProtocolTransport {
 
     @Override
     public Mono<TransportConnection> connect(RsocketConfiguration config) {
-        return Mono.just(buildClient(config)
-                .connectNow())
+        return buildClient(config)
+                .connect()
                 .map(connection -> {
-                    protocol.getHandlers().forEach(connection::addHandler);
+                    Connection connection1= connection;
+                    log.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&链接成功了");
+                    protocol.getHandlers().forEach(connection1::addHandler);
                     TransportConnection transportConnection = new TransportConnection(connection);
                     connection.onDispose(() -> retryConnect(config,transportConnection));
                     return transportConnection;

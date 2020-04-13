@@ -9,6 +9,7 @@ import com.iot.config.RsocketClientConfig;
 import com.iot.transport.client.handler.ClientMessageRouter;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.NettyInbound;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class RsocketClientConnection implements RsocketClientSession {
 
     private final TransportConnection connection;
@@ -33,6 +35,7 @@ public class RsocketClientConnection implements RsocketClientSession {
         this.clientConfig = clientConfig;
         this.connection = connection;
         this.clientMessageRouter = new ClientMessageRouter(clientConfig);
+
         initHandler();
     }
 
@@ -50,6 +53,17 @@ public class RsocketClientConnection implements RsocketClientSession {
                 options.isHasWillFlag(),
                 options.getWillQos()
         )).subscribe()).delaySubscription(Duration.ofSeconds(2)).repeat().subscribe();
+        connection.write(MqttMessageApi.buildConnect(
+                options.getClientIdentifier(),
+                options.getWillTopic(),
+                options.getWillMessage(),
+                options.getUserName(),
+                options.getPassword(),
+                options.isHasUserName(),
+                options.isHasPassword(),
+                options.isHasWillFlag(),
+                options.getWillQos()
+                )).doOnError(throwable -> log.error(throwable.getMessage())).subscribe();
         connection.getConnection().channel().attr(AttributeKeys.closeConnection).set(disposable);
         connection.getConnection().onWriteIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳
         connection.getConnection().onReadIdle(clientConfig.getHeart()*2, () -> connection.sendPingReq().subscribe()); // 发送心跳
@@ -61,8 +75,8 @@ public class RsocketClientConnection implements RsocketClientSession {
         int messageId = connection.messageId();
         connection.addDisposable(messageId, Mono.fromRunnable(() ->
                 connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe())
-                .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retry
-        connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe();
+                .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retryPooledConnectionProvider
+//        connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe();
     }
 
     @Override

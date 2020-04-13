@@ -15,14 +15,14 @@ public class Producer_1 {
     @Test
     public void testClient() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-    RsocketClientSession clientSession= TransportClient.create("192.168.100.237",1884)
+    RsocketClientSession clientSession= TransportClient.create("192.168.100.210",1883)
               .heart(10000)
               .protocol(ProtocolType.MQTT)
               .ssl(false)
-              .log(false)
-              .clientId("Producer_1")
-                .password("12")
-            .username("123")
+              .log(true)
+              .clientId("/test-meeting")
+            .username("test")
+            .password("test")
             .onClose(()->{})
             .willMessage("123")
             .willTopic("/lose")
