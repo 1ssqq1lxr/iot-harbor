@@ -40,30 +40,20 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>com.lmax</groupId>
-        <artifactId>disruptor</artifactId>
-        <version>3.4.2</version>
-      </dependency>
-      <dependency>
         <groupId>io.projectreactor.netty</groupId>
         <artifactId>reactor-netty</artifactId>
         <version>${io.projectreactor.netty}</version>
       </dependency>
-      <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
       <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
         <version>${lombok}</version>
       </dependency>
-      <!-- https://mvnrepository.com/artifact/io.netty/netty-codec-mqtt -->
-      <!-- https://mvnrepository.com/artifact/io.netty/netty-codec-mqtt -->
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-codec-mqtt</artifactId>
         <version>4.1.42.Final</version>
       </dependency>
-
-      <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
       <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
@@ -106,15 +96,6 @@
         <version>RELEASE</version>
         <scope>compile</scope>
       </dependency>
-
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>25.1-jre</version>
-      </dependency>
-
-
-
     </dependencies>
     <!-- https://mvnrepository.com/artifact/io.projectreactor.netty/reactor-netty -->
   </dependencyManagement>
