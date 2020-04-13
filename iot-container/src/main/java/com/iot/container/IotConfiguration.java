@@ -65,7 +65,7 @@ public class IotConfiguration implements ApplicationContextAware {
                 .auth(auth)
                 .ssl(iotConfig.getServer().isSsl())
                 .messageHandler(messageHandler)
-                .exception(System.out::println)
+                .exception(throwableConsumer)
                 .start()
                 .block();
     }
