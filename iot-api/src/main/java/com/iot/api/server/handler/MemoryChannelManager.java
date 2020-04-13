@@ -45,5 +45,10 @@ public class MemoryChannelManager implements RsocketChannelManager {
         return connectionMap.remove(deviceId);
     }
 
+    @Override
+    public boolean checkDeviceId(String deviceId) {
+        return connectionMap.containsKey(deviceId);
+    }
+
 
 }

@@ -17,4 +17,6 @@ public interface RsocketChannelManager  {
      void removeDeviceId(String deviceId);
 
      TransportConnection getRemoveDeviceId(String deviceId);
+
+     boolean checkDeviceId(String deviceId);
 }

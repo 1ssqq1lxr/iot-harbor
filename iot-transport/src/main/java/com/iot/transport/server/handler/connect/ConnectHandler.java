@@ -25,19 +25,27 @@ public class ConnectHandler implements DirectHandler {
                     MqttConnectMessage connectMessage =(MqttConnectMessage) message;
                     MqttConnectVariableHeader connectVariableHeader=connectMessage.variableHeader();
                     MqttConnectPayload mqttConnectPayload=connectMessage.payload();
-                    if(connectVariableHeader.hasPassword() && connectVariableHeader.hasUserName()){
-                        if(serverConfig.getAuth().apply(mqttConnectPayload.userName(),mqttConnectPayload.password()))
-                            connectSuccess(connection,serverConfig.getChannelManager(),mqttConnectPayload.clientIdentifier());
-                        else connection.write( MqttMessageApi.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD)).subscribe();
-                        if(connectVariableHeader.isWillFlag())
-                            saveWill(connection,mqttConnectPayload.willTopic(),connectVariableHeader.isWillRetain(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
+                    RsocketChannelManager channelManager=serverConfig.getChannelManager();
+                    String clientId=mqttConnectPayload.clientIdentifier();
+                    if(channelManager.checkDeviceId(clientId)){
+                        connection.write( MqttMessageApi.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED)).subscribe();
+                        connection.dispose();
                     }
                     else {
-                        connectSuccess(connection,serverConfig.getChannelManager(),mqttConnectPayload.clientIdentifier());
-                        if(connectVariableHeader.isWillFlag())
-                            saveWill(connection,mqttConnectPayload.willTopic(),connectVariableHeader.isWillRetain(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
+                        if(connectVariableHeader.hasPassword() && connectVariableHeader.hasUserName()){
+                            if(serverConfig.getAuth().apply(mqttConnectPayload.userName(),mqttConnectPayload.password()))
+                                connectSuccess(connection,serverConfig.getChannelManager(),clientId);
+                            else connection.write( MqttMessageApi.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD)).subscribe();
+                            if(connectVariableHeader.isWillFlag())
+                                saveWill(connection,mqttConnectPayload.willTopic(),connectVariableHeader.isWillRetain(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
+                        }
+                        else {
+                            connectSuccess(connection,channelManager,mqttConnectPayload.clientIdentifier());
+                            if(connectVariableHeader.isWillFlag())
+                                saveWill(connection,mqttConnectPayload.willTopic(),connectVariableHeader.isWillRetain(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
+                        }
+                        break;
                     }
-                    break;
                 case DISCONNECT:
                     serverConfig.getChannelManager().removeConnections(connection);
                     connection.dispose();
