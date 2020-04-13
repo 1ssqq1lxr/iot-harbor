@@ -76,7 +76,7 @@ public class RsocketClientConnection implements RsocketClientSession {
         connection.addDisposable(messageId, Mono.fromRunnable(() ->
                 connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe())
                 .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retryPooledConnectionProvider
-//        connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe();
+        connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe();
     }
 
     @Override
