@@ -45,9 +45,13 @@ public class TopicMap<K,V>  {
         }
         else{
             Node<K, V> kvNode = datas.get(ks[0]);
+            if (kvNode == null) {
+                return false;
+            }
             for(int i=1;i<ks.length&& kvNode!=null ;i++){
                 kvNode =kvNode.getNext(ks[i]);
             }
+
             return kvNode.delValue(v);
 
         }
