@@ -84,7 +84,7 @@ public class IotConfiguration implements ApplicationContextAware {
                 .log(client.isLog())
                 .clientId(client.getOption().getClientIdentifier())
                 .password(client.getOption().getPassword())
-                .username(client.getOption().getPassword())
+                .username(client.getOption().getUserName())
                 .willMessage(client.getOption().getWillMessage())
                 .willTopic(client.getOption().getWillTopic())
                 .willQos(client.getOption().getWillQos())
