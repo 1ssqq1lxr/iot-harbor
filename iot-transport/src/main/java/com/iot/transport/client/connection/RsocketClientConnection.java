@@ -16,6 +16,7 @@ import reactor.netty.NettyInbound;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class RsocketClientConnection implements RsocketClientSession {
                 options.isHasPassword(),
                 options.isHasWillFlag(),
                 options.getWillQos()
-        )).subscribe()).delaySubscription(Duration.ofSeconds(2)).repeat().subscribe();
+        )).subscribe()).delaySubscription(Duration.ofSeconds(10)).repeat().subscribe();
         connection.write(MqttMessageApi.buildConnect(
                 options.getClientIdentifier(),
                 options.getWillTopic(),
@@ -72,11 +73,13 @@ public class RsocketClientConnection implements RsocketClientSession {
                 .subscribe(message ->  clientMessageRouter.handler(message, connection));
         connection.getConnection().channel().attr(AttributeKeys.clientConnectionAttributeKey).set(this);
         List<MqttTopicSubscription> mqttTopicSubscriptions=connection.getTopics().stream().map(s -> new MqttTopicSubscription(s, MqttQoS.AT_MOST_ONCE)).collect(Collectors.toList());
-        int messageId = connection.messageId();
-        connection.addDisposable(messageId, Mono.fromRunnable(() ->
-                connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe())
-                .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retryPooledConnectionProvider
-        connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe();
+        if(mqttTopicSubscriptions!=null && mqttTopicSubscriptions.size()>0){
+            int messageId = connection.messageId();
+            connection.addDisposable(messageId, Mono.fromRunnable(() ->
+                    connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe())
+                    .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe()); // retryPooledConnectionProvider
+            connection.write(MqttMessageApi.buildSub(messageId, mqttTopicSubscriptions)).subscribe();
+        }
     }
 
     @Override
