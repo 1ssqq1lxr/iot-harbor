@@ -52,7 +52,8 @@ public class RsocketClientConnection implements RsocketClientSession {
                 options.isHasUserName(),
                 options.isHasPassword(),
                 options.isHasWillFlag(),
-                options.getWillQos()
+                options.getWillQos(),
+                clientConfig.getHeart()
         )).subscribe()).delaySubscription(Duration.ofSeconds(10)).repeat().subscribe();
         connection.write(MqttMessageApi.buildConnect(
                 options.getClientIdentifier(),
@@ -63,7 +64,8 @@ public class RsocketClientConnection implements RsocketClientSession {
                 options.isHasUserName(),
                 options.isHasPassword(),
                 options.isHasWillFlag(),
-                options.getWillQos()
+                options.getWillQos(),
+                clientConfig.getHeart()
                 )).doOnError(throwable -> log.error(throwable.getMessage())).subscribe();
         connection.getConnection().channel().attr(AttributeKeys.closeConnection).set(disposable);
         connection.getConnection().onWriteIdle(clientConfig.getHeart(), () -> connection.sendPingReq().subscribe()); // 发送心跳

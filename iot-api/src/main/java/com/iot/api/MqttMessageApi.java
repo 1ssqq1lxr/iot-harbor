@@ -2,10 +2,8 @@ package com.iot.api;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.*;
-import jdk.nashorn.internal.runtime.options.Option;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public class MqttMessageApi {
@@ -81,11 +79,11 @@ public class MqttMessageApi {
         return new MqttUnsubscribeMessage(mqttFixedHeader,variableHeader,MqttUnsubscribeMessage);
     }
 
-    public static MqttConnectMessage buildConnect(String clientId,String willTopic,String willMessage,String username,String password,boolean isUsername,boolean isPassword,boolean isWill,int willQos){
+    public static MqttConnectMessage buildConnect(String clientId, String willTopic, String willMessage, String username, String password, boolean isUsername, boolean isPassword, boolean isWill, int willQos, int heart){
 
-        MqttConnectVariableHeader mqttConnectVariableHeader = new MqttConnectVariableHeader(MqttVersion.MQTT_3_1_1.protocolName(),MqttVersion.MQTT_3_1_1.protocolLevel(),isUsername,isPassword,false,willQos,isWill,false,2000);
+        MqttConnectVariableHeader mqttConnectVariableHeader = new MqttConnectVariableHeader(MqttVersion.MQTT_3_1_1.protocolName(),MqttVersion.MQTT_3_1_1.protocolLevel(),isUsername,isPassword,false,willQos,isWill,false,heart);
         MqttConnectPayload mqttConnectPayload = new MqttConnectPayload(clientId,willTopic,isWill?willMessage.getBytes():null,username,isPassword?password.getBytes():null);
-        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.CONNECT,false, MqttQoS.AT_MOST_ONCE,false,10);
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.CONNECT,false, MqttQoS.AT_LEAST_ONCE,false,10);
         return new MqttConnectMessage(mqttFixedHeader,mqttConnectVariableHeader,mqttConnectPayload);
     }
 
