@@ -34,13 +34,13 @@ public class ConnectHandler implements DirectHandler {
                     else {
                         if(connectVariableHeader.hasPassword() && connectVariableHeader.hasUserName()){
                             if(serverConfig.getAuth().apply(mqttConnectPayload.userName(),mqttConnectPayload.password()))
-                                connectSuccess(connection,serverConfig.getChannelManager(),clientId);
+                                connectSuccess(connection,serverConfig.getChannelManager(),clientId,connectVariableHeader.keepAliveTimeSeconds());
                             else connection.write( MqttMessageApi.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD)).subscribe();
                             if(connectVariableHeader.isWillFlag())
                                 saveWill(connection,mqttConnectPayload.willTopic(),connectVariableHeader.isWillRetain(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
                         }
                         else {
-                            connectSuccess(connection,channelManager,mqttConnectPayload.clientIdentifier());
+                            connectSuccess(connection,channelManager,mqttConnectPayload.clientIdentifier(),connectVariableHeader.keepAliveTimeSeconds());
                             if(connectVariableHeader.isWillFlag())
                                 saveWill(connection,mqttConnectPayload.willTopic(),connectVariableHeader.isWillRetain(),mqttConnectPayload.willMessageInBytes(),connectVariableHeader.willQos());
                         }
@@ -58,8 +58,9 @@ public class ConnectHandler implements DirectHandler {
         connection.getConnection().channel().attr(AttributeKeys.WILL_MESSAGE).set(ws); // 设置device Id
     }
 
-    private  void  connectSuccess(TransportConnection connection, RsocketChannelManager channelManager,String deviceId){
-        connection.getConnection().channel().attr(AttributeKeys.device_id).set(deviceId); // 设置device Id
+    private  void  connectSuccess(TransportConnection connection, RsocketChannelManager channelManager, String deviceId, int keepalived){
+        connection.getConnection().onReadIdle(keepalived, () -> connection.getConnection().dispose()); // 心跳超时关闭
+        connection.getConnection().channel().attr(AttributeKeys.keepalived).set(keepalived); // 设置device Id
         channelManager.addDeviceId(deviceId,connection);
         Optional.ofNullable(connection.getConnection().channel().attr(AttributeKeys.closeConnection)) // 取消关闭连接
                 .map(Attribute::get)

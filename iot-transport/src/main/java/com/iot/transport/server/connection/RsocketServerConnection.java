@@ -63,7 +63,6 @@ public class RsocketServerConnection implements RsocketServerSession {
                 .subscribe();
         c.channel().attr(AttributeKeys.connectionAttributeKey).set(connection); // 设置connection
         c.channel().attr(AttributeKeys.closeConnection).set(disposable);   // 设置close
-        connection.getConnection().onReadIdle(config.getHeart(), () -> connection.getConnection().dispose()); // 心跳超时关闭
         connection.getConnection().onDispose(() -> { // 关闭  发送will消息
             Optional.ofNullable(connection.getConnection().channel().attr(AttributeKeys.WILL_MESSAGE)).map(Attribute::get)
                     .ifPresent(willMessage -> Optional.ofNullable(topicManager.getConnectionsByTopic(willMessage.getTopicName()))
