@@ -20,6 +20,8 @@ public class AttributeKeys {
 
     public AttributeKey<String> device_id = AttributeKey.valueOf("device_id");
 
+    public AttributeKey<Integer> keepalived = AttributeKey.valueOf("keepalived");
+
     public AttributeKey<WillMessage> WILL_MESSAGE = AttributeKey.valueOf("WILL_MESSAGE");
 
 }
