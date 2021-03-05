@@ -88,7 +88,7 @@ iot:
             
 ```
 ### qq交流群 + 789331252
-![image](image/icon.png=300x200)
+![image](image/icon.jpg)
 
 
 
