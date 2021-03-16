@@ -59,7 +59,7 @@ public class ConnectHandler implements DirectHandler {
     }
 
     private  void  connectSuccess(TransportConnection connection, RsocketChannelManager channelManager, String deviceId, int keepalived){
-        connection.getConnection().onReadIdle(keepalived, () -> connection.getConnection().dispose()); // 心跳超时关闭
+        connection.getConnection().onReadIdle(keepalived*2000, () -> connection.getConnection().dispose()); // 心跳超时关闭
         connection.getConnection().channel().attr(AttributeKeys.keepalived).set(keepalived); // 设置device Id
         channelManager.addDeviceId(deviceId,connection);
         Optional.ofNullable(connection.getConnection().channel().attr(AttributeKeys.closeConnection)) // 取消关闭连接
