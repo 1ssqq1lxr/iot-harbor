@@ -87,7 +87,7 @@ iot:
 保留消息处理：实现RsocketMessageHandler接口注入容器即可，默认使用内存。      
             
 ```
-### 关注公众号，输入 `入群` 加入交流群
+### 关注公众号，输入 `物联网` 加入交流群
 ![image](image/icon.jpg)
 
 
