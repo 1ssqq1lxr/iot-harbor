@@ -8,7 +8,7 @@
 ### 采用技术
 
 > 使用开源reactor-netty库，实现MQTT server。集成了springboot autoconfig实现快速注入容器。
-框架采用反应式reactor3库，是代码具有低延迟，高吞吐量等特点。
+框架采用反应式reactor3库，使代码具有低延迟，高吞吐量等特点。
 
 ### 目前实现功能
 
